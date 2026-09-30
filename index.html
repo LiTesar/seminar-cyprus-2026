@@ -42,7 +42,7 @@
    }
 
    body {
-     background-image: linear-gradient(rgba(255,255,255,0.72), rgba(255,255,255,0.78)), url("./public/pozadi.png");
+     background-image: url("./public/pozadi.png");
      background-size: cover;
      background-position: center top;
      background-attachment: fixed;
@@ -68,7 +68,9 @@
    }
 
    header {
-     background: linear-gradient(150deg, #1e4a36 0%, #2d6a4f 45%, #3a7d8c 100%);
+     background:
+       linear-gradient(180deg, rgba(7, 43, 58, 0.22), rgba(7, 43, 58, 0.12)),
+       url("./public/pozadi.png") center center / cover no-repeat;
      color: var(--primary-foreground);
      padding: 3rem 1.5rem 2.5rem;
      text-align: center;

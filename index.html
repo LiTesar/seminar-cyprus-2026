@@ -652,7 +652,7 @@
        thanksTitle: "Спасибо за регистрацию!",
        thanksBody: "Точный адрес места проведения семинара мы отправим вам по электронной почте не позднее 20 октября 2026 года.",
        again: "Зарегистрировать другую компанию",
-       ticketTitle: "Ваш пригласительный билет",
+       ticketTitle: "Ваше приглашение",
        ticketNote: "Скачайте приглашение, распечатайте его и возьмите с собой.",
        ticketDownload: "Скачать приглашение"
      }
@@ -724,9 +724,9 @@
      document.getElementById("txt-thanks-title").textContent = t.thanksTitle;
      document.getElementById("txt-thanks-body").textContent = t.thanksBody;
      document.getElementById("txt-again").textContent = t.again;
-     document.getElementById("txt-ticket-title").textContent = t.ticketTitle || translations.cs.ticketTitle;
-     document.getElementById("txt-ticket-note").textContent = t.ticketNote || translations.cs.ticketNote;
-     document.getElementById("ticket-download").textContent = t.ticketDownload || translations.cs.ticketDownload;
+     document.getElementById("txt-ticket-title").textContent = t.ticketTitle;
+     document.getElementById("txt-ticket-note").textContent = t.ticketNote;
+     document.getElementById("ticket-download").textContent = t.ticketDownload;
    }
 
    const REGISTRATION_ENDPOINT = "https://script.google.com/macros/s/AKfycbyS5lEIeerKwtGCyCXx0uxEU1ZK_dbJkvZzuCvD0y-hwenjXIoyQ1lvSgU2rL_7UxJo/exec";

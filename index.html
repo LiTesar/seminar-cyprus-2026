@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+
+<html lang="cs">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Healthy Lifestyle &amp; Longevity Seminar | Esentepe, Cyprus 2026</title>
+
+  <!-- Písma -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+   :root {
+     --radius: 0.75rem;
+     --background: #fbfbf7;
+     --foreground: #22372b;
+     --card: #ffffff;
+     --primary: #2d6a4f;
+     --primary-hover: #22543d;
+     --primary-foreground: #ffffff;
+     --secondary: #f0f2eb;
+     --muted: #f4f5ee;
+     --muted-foreground: #5a6e60;
+     --accent: #d97706;
+     --accent-foreground: #ffffff;
+     --border: #e2e5d8;
+     --sand: #f5f3e9;
+     --destructive: #dc2626;
+     --font-display: "Fraunces", Georgia, serif;
+     --font-sans: "Karla", system-ui, -apple-system, sans-serif;
+     --shadow-card: 0 24px 60px -24px rgba(45, 106, 79, 0.25);
+   }
+
+   * {
+     box-sizing: border-box;
+     margin: 0;
+     padding: 0;
+     border-color: var(--border);
+   }
+
+   body {
+     background-image: linear-gradient(rgba(255,255,255,0.72), rgba(255,255,255,0.78)), url("./pozadi.png");
+     background-size: cover;
+     background-position: center top;
+     background-attachment: fixed;
+     background-color: var(--background);
+     color: var(--foreground);
+     font-family: var(--font-sans);
+     line-height: 1.5;
+     padding: 2rem 1rem;
+     min-height: 100vh;
+     display: flex;
+     justify-content: center;
+     align-items: flex-start;
+   }
+
+   .container {
+     width: 100%;
+     max-width: 680px;
+     background: var(--card);
+     border-radius: 1.5rem;
+     overflow: hidden;
+     box-shadow: var(--shadow-card);
+     border: 1px solid var(--border);
+   }
+
+   header {
+     background: linear-gradient(150deg, #1e4a36 0%, #2d6a4f 45%, #3a7d8c 100%);
+     color: var(--primary-foreground);
+     padding: 3rem 1.5rem 2.5rem;
+     text-align: center;
+   }
+
+   .lang-switcher {
+     display: inline-flex;
+     gap: 0.25rem;
+     background: rgba(255, 255, 255, 0.18);
+     backdrop-filter: blur(8px);
+     padding: 0.25rem;
+     border-radius: 9999px;
+     margin-bottom: 1.5rem;
+   }
+
+   .lang-btn {
+     background: transparent;
+     border: none;
+     color: rgba(255, 255, 255, 0.85);
+     font-weight: 600;
+     font-size: 0.8rem;
+     padding: 0.35rem 0.85rem;
+     border-radius: 9999px;
+     cursor: pointer;
+     transition: all 0.2s ease;
+     display: flex;
+     align-items: center;
+     gap: 0.35rem;
+   }
+
+   .lang-btn.active {
+     background: #ffffff;
+     color: var(--foreground);
+     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+   }
+
+   .kicker {
+     font-size: 0.75rem;
+     text-transform: uppercase;
+     letter-spacing: 0.2em;
+     opacity: 0.85;
+     margin-bottom: 0.5rem;
+   }
+
+   h1 {
+     font-family: var(--font-display);
+     font-size: 2rem;
+     line-height: 1.25;
+     font-weight: 600;
+     margin-bottom: 0.75rem;
+   }
+
+   .when {
+     font-size: 0.95rem;
+     opacity: 0.9;
+     margin-bottom: 1.25rem;
+   }
+
+   .badge-free {
+     display: inline-block;
+     background: var(--accent);
+     color: var(--accent-foreground);
+     font-weight: 700;
+     font-size: 0.85rem;
+     padding: 0.35rem 1rem;
+     border-radius: 9999px;
+     letter-spacing: 0.05em;
+   }
+
+   .details-grid {
+     display: grid;
+     grid-template-columns: 1fr;
+     gap: 0.85rem;
+     padding: 1.5rem 2rem;
+     background: var(--sand);
+     border-bottom: 1px solid var(--border);
+   }
+
+   @media (min-width: 600px) {
+     .details-grid {
+       grid-template-columns: 1fr 1fr;
+     }
+   }
+
+   .detail-item .label {
+     font-weight: 600;
+     font-size: 0.85rem;
+     color: var(--foreground);
+   }
+
+   .detail-item .value {
+     font-size: 0.85rem;
+     color: var(--muted-foreground);
+   }
+
+   .form-wrapper {
+     padding: 2rem;
+   }
+
+   @media (min-width: 600px) {
+     .form-wrapper {
+       padding: 2.5rem;
+     }
+   }
+
+   .form-group {
+     margin-bottom: 1.25rem;
+   }
+
+   label {
+     display: block;
+     font-size: 0.875rem;
+     font-weight: 600;
+     margin-bottom: 0.35rem;
+     color: var(--foreground);
+   }
+
+   .required {
+     color: var(--destructive);
+     margin-left: 0.2rem;
+   }
+
+   input, select, textarea {
+     width: 100%;
+     border-radius: var(--radius);
+     border: 1px solid var(--border);
+     background-color: var(--card);
+     padding: 0.75rem 0.9rem;
+     font-size: 0.95rem;
+     font-family: inherit;
+     color: var(--foreground);
+     transition: border-color 0.2s, box-shadow 0.2s;
+   }
+
+   input:focus, select:focus, textarea:focus {
+     outline: none;
+     border-color: var(--primary);
+     box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
+   }
+
+   .hint {
+     font-size: 0.75rem;
+     color: var(--muted-foreground);
+     margin-top: 0.3rem;
+   }
+
+   .checkbox-box {
+     display: flex;
+     align-items: flex-start;
+     gap: 0.75rem;
+     background: var(--muted);
+     padding: 1rem;
+     border-radius: var(--radius);
+     margin-bottom: 1.25rem;
+     font-size: 0.875rem;
+   }
+
+   .checkbox-box input[type="checkbox"] {
+     width: 1.2rem;
+     height: 1.2rem;
+     margin-top: 0.15rem;
+     cursor: pointer;
+     accent-color: var(--primary);
+   }
+
+   button[type="submit"] {
+     width: 100%;
+     background: var(--primary);
+     color: var(--primary-foreground);
+     font-family: inherit;
+     font-size: 1rem;
+     font-weight: 600;
+     padding: 0.9rem 1.5rem;
+     border-radius: var(--radius);
+     border: none;
+     cursor: pointer;
+     transition: transform 0.15s, background-color 0.15s;
+     box-shadow: 0 4px 12px rgba(45, 106, 79, 0.25);
+   }
+
+   button[type="submit"]:hover {
+     background: var(--primary-hover);
+     transform: translateY(-1px);
+   }
+
+
+   .ticket-box {
+     margin: 0 2rem;
+     padding: 1.25rem 1.35rem;
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 1rem;
+     border: 1px solid var(--border);
+     border-radius: var(--radius);
+     background: linear-gradient(135deg, rgba(245,243,233,.96), rgba(255,255,255,.96));
+   }
+
+   .ticket-box h2 {
+     font-family: var(--font-display);
+     font-size: 1.25rem;
+     margin-bottom: .25rem;
+   }
+
+   .ticket-box p {
+     color: var(--muted-foreground);
+     font-size: .82rem;
+   }
+
+   .ticket-download {
+     display: inline-flex;
+     align-items: center;
+     justify-content: center;
+     white-space: nowrap;
+     background: var(--primary);
+     color: #fff;
+     text-decoration: none;
+     font-weight: 700;
+     padding: .75rem 1rem;
+     border-radius: var(--radius);
+   }
+
+   .ticket-download:hover { background: var(--primary-hover); }
+
+   @media (max-width: 599px) {
+     .ticket-box { flex-direction: column; align-items: stretch; margin: 0 1rem; }
+     .ticket-download { width: 100%; }
+   }
+
+   #thank-you {
+     display: none;
+     text-align: center;
+     padding: 2.5rem 1.5rem;
+     border: 1px solid rgba(45, 106, 79, 0.25);
+     background: rgba(45, 106, 79, 0.05);
+     border-radius: var(--radius);
+   }
+
+   #thank-you h2 {
+     font-family: var(--font-display);
+     font-size: 1.6rem;
+     margin-bottom: 0.75rem;
+     color: var(--foreground);
+   }
+
+   #thank-you p {
+     font-size: 0.9rem;
+     color: var(--muted-foreground);
+     margin-bottom: 1.5rem;
+   }
+
+   .btn-again {
+     background: #ffffff;
+     border: 1px solid var(--border);
+     padding: 0.5rem 1.25rem;
+     font-size: 0.85rem;
+     font-weight: 600;
+     border-radius: 0.5rem;
+     cursor: pointer;
+     color: var(--foreground);
+   }
+ </style>
+
+</head>
+<body>
+
+  <div class="container">
+   <header>
+     <div class="lang-switcher" role="group" aria-label="Language selector">
+       <button class="lang-btn" onclick="setLanguage('en')"><span>🇬🇧</span> EN</button>
+       <button class="lang-btn" onclick="setLanguage('tr')"><span>🇹🇷</span> TR</button>
+       <button class="lang-btn" onclick="setLanguage('el')"><span>🇬🇷</span> EL</button>
+       <button class="lang-btn active" onclick="setLanguage('cs')"><span>🇨🇿</span> CS</button>
+      <button class="lang-btn" onclick="setLanguage('ru')"><span>🇷🇺</span> RU</button>
+     </div>
+
+```
+  <p class="kicker" id="txt-kicker">Mezinárodní seminář</p>
+  <h1 id="txt-title">Zdravý životní styl a dlouhověkost</h1>
+  <p class="when" id="txt-when">Esentepe, Severní Kypr · 26. října 2026 · 18:00–20:00</p>
+  <span class="badge-free" id="txt-free">Vstup zdarma</span>
+</header>
+
+<section class="details-grid" id="details-container">
+  <!-- Generováno přes JavaScript -->
+</section>
+
+<section class="ticket-box" aria-label="Invitation ticket">
+  <div>
+    <h2 id="txt-ticket-title">Váš přívací lístek</h2>
+    <p id="txt-ticket-note">Stáhněte si pozvánku, vytiskněte ji a vezměte ji s sebou.</p>
+  </div>
+  <a class="ticket-download" id="ticket-download" href="./vstupenka-seminar-esentepe.png" download>Stáhnout pozvánku</a>
+</section>
+
+<div class="form-wrapper">
+  <div id="thank-you">
+    <h2 id="txt-thanks-title">Děkujeme za přihlášku!</h2>
+    <p id="txt-thanks-body">Přesné místo konání semináře vám zašleme e-mailem nejpozději 20. října 2026.</p>
+    <button type="button" class="btn-again" onclick="resetForm()" id="txt-again">Přihlásit další firmu</button>
+  </div>
+
+  <form id="reg-form" onsubmit="handleFormSubmit(event)">
+    <div class="form-group">
+      <label for="fullName"><span id="lbl-fullName">Jméno a příjmení</span><span class="required">*</span></label>
+      <input type="text" id="fullName" name="fullName" required placeholder="Jan Novák">
+    </div>
+
+    <div class="form-group">
+      <label for="companyName"><span id="lbl-company">Název firmy / organizace</span><span class="required">*</span></label>
+      <input type="text" id="companyName" name="companyName" required placeholder="Korineum Golf & Beach Resort">
+    </div>
+
+    <div class="form-group">
+      <label for="companyAddress"><span id="lbl-address">Adresa firmy</span><span class="required">*</span></label>
+      <textarea id="companyAddress" name="companyAddress" rows="3" required placeholder="Esentepe, Girne, Severní Kypr"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="email"><span id="lbl-email">E-mailová adresa</span><span class="required">*</span></label>
+      <input type="email" id="email" name="email" required placeholder="info@company.com">
+      <div class="hint" id="hint-email">Na tuto adresu zašleme potvrzení a přesné místo konání.</div>
+    </div>
+
+    <div class="form-group">
+      <label for="phone"><span id="lbl-phone">Telefonní číslo</span><span class="required">*</span></label>
+      <input type="tel" id="phone" name="phone" required placeholder="+90 392 900 10 00">
+    </div>
+
+    <div class="form-group">
+      <label for="participantCount"><span id="lbl-count">Počet účastníků z firmy</span><span class="required">*</span></label>
+      <input type="number" id="participantCount" name="participantCount" min="1" max="10" value="1" required>
+      <div class="hint" id="hint-count">Kolik osob z vaší firmy se semináře zúčastní? (max. 10)</div>
+    </div>
+
+    <div class="form-group">
+      <label for="category"><span id="lbl-category">Kategorie firmy</span></label>
+      <select id="category" name="category">
+        <!-- Možnosti generovány JavaScriptem -->
+      </select>
+    </div>
+
+    <div class="checkbox-box">
+      <input type="checkbox" id="confirmation" name="confirmation" required>
+      <label for="confirmation" style="margin-bottom:0; font-weight:normal; cursor:pointer;">
+        <span id="lbl-confirm">Potvrzuji svou účast na bezplatném semináři dne 26. října 2026 od 18:00 do 20:00 v okolí Esentepe.</span>
+        <span class="required">*</span>
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label for="notes"><span id="lbl-notes">Poznámky pro organizátory</span></label>
+      <textarea id="notes" name="notes" rows="3" placeholder="Máte-li speciální požadavky nebo otázky, napište je zde."></textarea>
+    </div>
+
+    <button type="submit" id="btn-submit">Odeslat přihlášku</button>
+  </form>
+</div>
+```
+
+  </div>
+
+  <script>
+   const translations = {
+     en: {
+       kicker: "International seminar",
+       title: "Healthy Lifestyle & Longevity",
+       when: "Esentepe, North Cyprus · 26 October 2026 · 18:00–20:00",
+       freeBadge: "Free entry",
+       details: [
+         { label: "Date", value: "26 October 2026" },
+         { label: "Time", value: "18:00–20:00" },
+         { label: "Venue", value: "Esentepe area, Girne (exact venue confirmed by 20 October)" },
+         { label: "Attendees", value: "Experts from CZ, SK, PL, HU, DE, AT + local businesses" }
+       ],
+       fullName: "Full name",
+       fullNamePlaceholder: "John Smith",
+       company: "Company / organisation name",
+       companyPlaceholder: "Korineum Golf & Beach Resort",
+       address: "Company address",
+       addressPlaceholder: "Esentepe, Girne, North Cyprus",
+       email: "Email address",
+       emailHint: "We will send the confirmation and exact venue to this address.",
+       phone: "Phone number",
+       count: "Number of attendees from your company",
+       countHint: "How many people from your company will attend? (max. 10)",
+       category: "Business category",
+       categoryPlaceholder: "-- Select a category --",
+       categories: [
+         "Hotel/Resort with Spa/Wellness",
+         "Therapist/Alternative healer",
+         "Yoga/Fitness studio",
+         "Health food/Organic products store",
+         "Nutrition specialist/Consultant",
+         "Restaurant/Café with healthy cuisine",
+         "Real estate/Residential project",
+         "Tourism organisation/NGO",
+         "Other"
+       ],
+       confirm: "I confirm my attendance at the free seminar on 26 October 2026, 18:00–20:00, in the Esentepe area.",
+       notes: "Notes for the organisers",
+       notesPlaceholder: "Any special requirements or questions? Write them here.",
+       submit: "Send registration",
+       thanksTitle: "Thank you for your registration!",
+       thanksBody: "We will email you the exact seminar venue no later than 20 October 2026.",
+       again: "Register another company"
+     },
+     tr: {
+       kicker: "Uluslararası seminer",
+       title: "Sağlıklı Yaşam ve Uzun Ömür",
+       when: "Esentepe, Kuzey Kıbrıs · 26 Ekim 2026 · 18:00–20:00",
+       freeBadge: "Giriş ücretsiz",
+       details: [
+         { label: "Tarih", value: "26 Ekim 2026" },
+         { label: "Saat", value: "18:00–20:00" },
+         { label: "Yer", value: "Esentepe bölgesi, Girne (kesin adres 20 Ekim'e kadar bildirilecek)" },
+         { label: "Katılımcılar", value: "ÇEK, SK, PL, HU, DE, AT uzmanları + yerel işletmeler" }
+       ],
+       fullName: "Ad ve soyad",
+       fullNamePlaceholder: "Ahmet Yılmaz",
+       company: "Firma / kuruluş adı",
+       companyPlaceholder: "Korineum Golf & Beach Resort",
+       address: "Firma adresi",
+       addressPlaceholder: "Esentepe, Girne, Kuzey Kıbrıs",
+       email: "E-posta adresi",
+       emailHint: "Onay ve kesin adres bu e-posta adresine gönderilecektir.",
+       phone: "Telefon numarası",
+       count: "Firmanızdan katılacak kişi sayısı",
+       countHint: "Firmanızdan kaç kişi katılacak? (en fazla 10)",
+       category: "Firma kategorisi",
+       categoryPlaceholder: "-- Kategori seçiniz --",
+       categories: [
+         "Otel/Resort, Spa/Wellness",
+         "Terapist/Alternatif şifacı",
+         "Yoga/Fitness stüdyosu",
+         "Sağlıklı gıda/Organik ürün mağazası",
+         "Beslenme uzmanı/Danışman",
+         "Sağlıklı mutfak sunan restoran/kafe",
+         "Emlak/Konut projesi",
+         "Turizm kuruluşu/STK",
+         "Diğer"
+       ],
+       confirm: "26 Ekim 2026 tarihinde 18:00–20:00 saatleri arasında Esentepe bölgesindeki ücretsiz seminere katılımımı onaylıyorum.",
+       notes: "Organizatörlere notlar",
+       notesPlaceholder: "Özel talep veya sorularınızı buraya yazabilirsiniz.",
+       submit: "Kaydı gönder",
+       thanksTitle: "Kaydınız için teşekkürler!",
+       thanksBody: "Seminerin kesin adresini en geç 20 Ekim 2026 tarihine kadar e-posta ile göndereceğiz.",
+       again: "Başka bir firma kaydet"
+     },
+     el: {
+       kicker: "Διεθνές σεμινάριο",
+       title: "Υγιεινός Τρόπος Ζωής και Μακροζωία",
+       when: "Εσεντεπέ, Βόρεια Κύπρος · 26 Οκτωβρίου 2026 · 18:00–20:00",
+       freeBadge: "Δωρεάν είσοδος",
+       details: [
+         { label: "Ημερομηνία", value: "26 Οκτωβρίου 2026" },
+         { label: "Ώρα", value: "18:00–20:00" },
+         { label: "Τόπος", value: "Περιοχή Εσεντεπέ, Κερύνεια (ο ακριβής χώρος θα ανακοινωθεί έως 20 Οκτωβρίου)" },
+         { label: "Συμμετέχοντες", value: "Ειδικοί από CZ, SK, PL, HU, DE, AT + τοπικές επιχειρήσεις" }
+       ],
+       fullName: "Ονοματεπώνυμο",
+       fullNamePlaceholder: "Γιώργος Παπαδόπουλος",
+       company: "Επωνυμία εταιρείας / οργανισμού",
+       companyPlaceholder: "Korineum Golf & Beach Resort",
+       address: "Διεύθυνση εταιρείας",
+       addressPlaceholder: "Εσεντεπέ, Κερύνεια, Βόρεια Κύπρος",
+       email: "Διεύθυνση email",
+       emailHint: "Σε αυτή τη διεύθυνση θα σταλεί η επιβεβαίωση και ο ακριβής χώρος.",
+       phone: "Τηλέφωνο",
+       count: "Αριθμός συμμετεχόντων από την εταιρεία",
+       countHint: "Πόσα άτομα από την εταιρεία σας θα συμμετάσχουν; (έως 10)",
+       category: "Κατηγορία επιχείρησης",
+       categoryPlaceholder: "-- Επιλέξτε κατηγορία --",
+       categories: [
+         "Ξενοδοχείο/Resort με Spa/Wellness",
+         "Θεραπευτής/Εναλλακτική θεραπεία",
+         "Στούντιο γιόγκα/γυμναστήριο",
+         "Κατάστημα υγιεινής διατροφής/βιολογικών",
+         "Διατροφολόγος/Σύμβουλος",
+         "Εστιατόριο/Καφέ υγιεινής κουζίνας",
+         "Ακίνητα/Οικιστικό έργο",
+         "Τουριστικός οργανισμός/ΜΚΟ",
+         "Άλλο"
+       ],
+       confirm: "Επιβεβαιώνω τη συμμετοχή μου στο δωρεάν σεμινάριο στις 26 Οκτωβρίου 2026, 18:00–20:00, στην περιοχή Εσεντεπέ.",
+       notes: "Σημειώσεις προς τους διοργανωτές",
+       notesPlaceholder: "Εάν έχετε ειδικές απαιτήσεις ή ερωτήσεις, γράψτε τις εδώ.",
+       submit: "Αποστολή εγγραφής",
+       thanksTitle: "Ευχαριστούμε για την εγγραφή σας!",
+       thanksBody: "Θα σας στείλουμε με email τον ακριβή χώρο του σεμιναρίου το αργότερο έως τις 20 Οκτωβρίου 2026.",
+       again: "Εγγραφή άλλης εταιρείας"
+     },
+     cs: {
+       kicker: "Mezinárodní seminář",
+       title: "Zdravý životní styl a dlouhověkost",
+       when: "Esentepe, Severní Kypr · 26. října 2026 · 18:00–20:00",
+       freeBadge: "Vstup zdarma",
+       details: [
+         { label: "Datum", value: "26. října 2026" },
+         { label: "Čas", value: "18:00–20:00" },
+         { label: "Místo", value: "Okolí Esentepe, Girne (přesné místo upřesníme do 20. října)" },
+         { label: "Účastníci", value: "Odborníci z ČR, SK, PL, HU, DE, AT + místní firmy" }
+       ],
+       fullName: "Jméno a příjmení",
+       fullNamePlaceholder: "Jan Novák",
+       company: "Název firmy / organizace",
+       companyPlaceholder: "Korineum Golf & Beach Resort",
+       address: "Adresa firmy",
+       addressPlaceholder: "Esentepe, Girne, Severní Kypr",
+       email: "E-mailová adresa",
+       emailHint: "Na tuto adresu zašleme potvrzení a přesné místo konání.",
+       phone: "Telefonní číslo",
+       count: "Počet účastníků z firmy",
+       countHint: "Kolik osob z vaší firmy se semináře zúčastní? (max. 10)",
+       category: "Kategorie firmy",
+       categoryPlaceholder: "-- Vyberte kategorii --",
+       categories: [
+         "Hotel/Resort se Spa/Wellness",
+         "Terapeut/Alternativní léčitel",
+         "Jóga/Fitness studio",
+         "Obchod se zdravou výživou/Bio produkty",
+         "Nutriční specialista/Poradce",
+         "Restaurace/Café se zdravou kuchyní",
+         "Real Estate/Rezidenční projekt",
+         "Turistická organizace/Nezisková organizace",
+         "Jiné"
+       ],
+       confirm: "Potvrzuji svou účast na bezplatném semináři dne 26. října 2026 od 18:00 do 20:00 v okolí Esentepe.",
+       notes: "Poznámky pro organizátory",
+       notesPlaceholder: "Máte-li speciální požadavky nebo otázky, napište je zde.",
+       submit: "Odeslat přihlášku",
+       thanksTitle: "Děkujeme za přihlášku!",
+       thanksBody: "Přesné místo konání semináře vám zašleme e-mailem nejpozději 20. října 2026.",
+       again: "Přihlásit další firmu",
+       ticketTitle: "Váš přívací lístek",
+       ticketNote: "Stáhněte si pozvánku, vytiskněte ji a vezměte ji s sebou.",
+       ticketDownload: "Stáhnout pozvánku"
+     },
+     ru: {
+       kicker: "Международный семинар",
+       title: "Здоровый образ жизни и долголетие",
+       when: "Эсентепе, Северный Кипр · 26 октября 2026 · 18:00–20:00",
+       freeBadge: "Вход свободный",
+       details: [
+         { label: "Дата", value: "26 октября 2026" },
+         { label: "Время", value: "18:00–20:00" },
+         { label: "Место", value: "Район Эсентепе, Гирне (точное место будет подтверждено до 20 октября)" },
+         { label: "Участники", value: "Эксперты из CZ, SK, PL, HU, DE, AT + местные компании" }
+       ],
+       fullName: "Имя и фамилия",
+       fullNamePlaceholder: "Иван Иванов",
+       company: "Название компании / организации",
+       companyPlaceholder: "Korineum Golf & Beach Resort",
+       address: "Адрес компании",
+       addressPlaceholder: "Эсентепе, Гирне, Северный Кипр",
+       email: "Электронная почта",
+       emailHint: "На этот адрес мы отправим подтверждение и точное место проведения.",
+       phone: "Номер телефона",
+       count: "Количество участников от компании",
+       countHint: "Сколько человек от вашей компании примут участие? (макс. 10)",
+       category: "Категория компании",
+       categoryPlaceholder: "-- Выберите категорию --",
+       categories: [
+         "Отель/курорт со Spa/Wellness",
+         "Терапевт/специалист по альтернативным методам",
+         "Студия йоги/фитнеса",
+         "Магазин здорового питания/органических продуктов",
+         "Специалист по питанию/консультант",
+         "Ресторан/кафе со здоровой кухней",
+         "Недвижимость/жилой проект",
+         "Туристическая организация/НКО",
+         "Другое"
+       ],
+       confirm: "Подтверждаю своё участие в бесплатном семинаре 26 октября 2026 года с 18:00 до 20:00 в районе Эсентепе.",
+       notes: "Примечания для организаторов",
+       notesPlaceholder: "Если у вас есть особые пожелания или вопросы, напишите их здесь.",
+       submit: "Отправить регистрацию",
+       thanksTitle: "Спасибо за регистрацию!",
+       thanksBody: "Точный адрес места проведения семинара мы отправим вам по электронной почте не позднее 20 октября 2026 года.",
+       again: "Зарегистрировать другую компанию",
+       ticketTitle: "Ваш пригласительный билет",
+       ticketNote: "Скачайте приглашение, распечатайте его и возьмите с собой.",
+       ticketDownload: "Скачать приглашение"
+     }
+   };
+
+   let currentLang = "cs";
+
+   function setLanguage(lang) {
+     currentLang = lang;
+     const t = translations[lang];
+
+     // Tlačítka jazyků
+     document.querySelectorAll(".lang-btn").forEach((btn, index) => {
+       const langs = ["en", "tr", "el", "cs", "ru"];
+       btn.classList.toggle("active", langs[index] === lang);
+     });
+
+     // Texty hlavičky
+     document.getElementById("txt-kicker").textContent = t.kicker;
+     document.getElementById("txt-title").textContent = t.title;
+     document.getElementById("txt-when").textContent = t.when;
+     document.getElementById("txt-free").textContent = t.freeBadge;
+
+     // Detaily semináře
+     const detailsBox = document.getElementById("details-container");
+     detailsBox.innerHTML = "";
+     t.details.forEach(d => {
+       const item = document.createElement("div");
+       item.className = "detail-item";
+       item.innerHTML = `<div class="label">${d.label}</div><div class="value">${d.value}</div>`;
+       detailsBox.appendChild(item);
+     });
+
+     // Formulářové popisky a placeholdery
+     document.getElementById("lbl-fullName").textContent = t.fullName;
+     document.getElementById("fullName").placeholder = t.fullNamePlaceholder;
+
+     document.getElementById("lbl-company").textContent = t.company;
+     document.getElementById("companyName").placeholder = t.companyPlaceholder;
+
+     document.getElementById("lbl-address").textContent = t.address;
+     document.getElementById("companyAddress").placeholder = t.addressPlaceholder;
+
+     document.getElementById("lbl-email").textContent = t.email;
+     document.getElementById("hint-email").textContent = t.emailHint;
+
+     document.getElementById("lbl-phone").textContent = t.phone;
+
+     document.getElementById("lbl-count").textContent = t.count;
+     document.getElementById("hint-count").textContent = t.countHint;
+
+     document.getElementById("lbl-category").textContent = t.category;
+    
+     const catSelect = document.getElementById("category");
+     catSelect.innerHTML = `<option value="">${t.categoryPlaceholder}</option>`;
+     t.categories.forEach((cat, idx) => {
+       const opt = document.createElement("option");
+       opt.value = "cat_" + idx;
+       opt.textContent = cat;
+       catSelect.appendChild(opt);
+     });
+
+     document.getElementById("lbl-confirm").textContent = t.confirm;
+
+     document.getElementById("lbl-notes").textContent = t.notes;
+     document.getElementById("notes").placeholder = t.notesPlaceholder;
+
+     document.getElementById("btn-submit").textContent = t.submit;
+     document.getElementById("txt-thanks-title").textContent = t.thanksTitle;
+     document.getElementById("txt-thanks-body").textContent = t.thanksBody;
+     document.getElementById("txt-again").textContent = t.again;
+     document.getElementById("txt-ticket-title").textContent = t.ticketTitle || translations.cs.ticketTitle;
+     document.getElementById("txt-ticket-note").textContent = t.ticketNote || translations.cs.ticketNote;
+     document.getElementById("ticket-download").textContent = t.ticketDownload || translations.cs.ticketDownload;
+   }
+
+   const REGISTRATION_ENDPOINT = "https://script.google.com/macros/s/AKfycbyS5lEIeerKwtGCyCXx0uxEU1ZK_dbJkvZzuCvD0y-hwenjXIoyQ1lvSgU2rL_7UxJo/exec";
+
+   async function handleFormSubmit(e) {
+     e.preventDefault();
+     const form = e.target;
+     const formData = new FormData(form);
+     const payload = new URLSearchParams();
+     payload.set("language", currentLang.toUpperCase());
+     payload.set("name", formData.get("fullName") || "");
+     payload.set("company", formData.get("companyName") || "");
+     payload.set("address", formData.get("companyAddress") || "");
+     payload.set("email", formData.get("email") || "");
+     payload.set("phone", formData.get("phone") || "");
+     payload.set("participants", formData.get("participantCount") || "");
+     payload.set("category", formData.get("category") || "");
+     payload.set("notes", formData.get("notes") || "");
+
+     const button = document.getElementById("btn-submit");
+     button.disabled = true;
+
+     try {
+       await fetch(REGISTRATION_ENDPOINT, {
+         method: "POST",
+         mode: "no-cors",
+         headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+         body: payload.toString()
+       });
+       form.style.display = "none";
+       document.getElementById("thank-you").style.display = "block";
+       window.scrollTo({ top: 0, behavior: "smooth" });
+     } catch (error) {
+       console.error("Chyba při odesílání registrace:", error);
+       button.disabled = false;
+       alert("Registraci se nepodařilo odeslat. Zkuste to prosím znovu.");
+     }
+   }
+
+   function resetForm() {
+     document.getElementById("reg-form").reset();
+     document.getElementById("reg-form").style.display = "block";
+     document.getElementById("thank-you").style.display = "none";
+   }
+
+   // Inicializace češtiny při načtení
+   setLanguage("cs");
+ </script>
+
+</body>
+</html>
+
+Zavřít

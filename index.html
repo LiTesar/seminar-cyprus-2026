@@ -68,12 +68,52 @@
    }
 
    header {
+     position: relative;
      background:
        linear-gradient(180deg, rgba(7, 43, 58, 0.22), rgba(7, 43, 58, 0.12)),
        url("./public/pozadi.png") center center / cover no-repeat;
      color: var(--primary-foreground);
      padding: 3rem 1.5rem 2.5rem;
      text-align: center;
+   }
+
+
+   .next-event-stamp {
+     position: absolute;
+     z-index: 2;
+     top: 16px;
+     right: 18px;
+     width: 112px;
+     height: 112px;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     gap: 2px;
+     border: 3px double #fff3d0;
+     outline: 1px solid rgba(255,255,255,.75);
+     outline-offset: 4px;
+     border-radius: 50%;
+     background: #a93625;
+     color: #fffdf5;
+     box-shadow: 0 5px 18px rgba(0,0,0,.3);
+     transform: rotate(10deg);
+     text-align: center;
+     text-transform: uppercase;
+     font-weight: 700;
+     letter-spacing: .08em;
+     line-height: 1.05;
+     pointer-events: none;
+   }
+   .next-event-stamp .stamp-label { font-size: .56rem; }
+   .next-event-stamp .stamp-month { font-family: var(--font-display); font-size: 1.35rem; letter-spacing: .02em; }
+   .next-event-stamp .stamp-year { font-size: 1.12rem; letter-spacing: .16em; }
+   @media (max-width: 599px) {
+     header { padding-top: 6.5rem; }
+     .next-event-stamp { top: 14px; right: 18px; width: 88px; height: 88px; border-width: 2px; }
+     .next-event-stamp .stamp-label { font-size: .46rem; }
+     .next-event-stamp .stamp-month { font-size: 1.05rem; }
+     .next-event-stamp .stamp-year { font-size: .9rem; }
    }
 
    .lang-switcher {
@@ -352,6 +392,11 @@
 
   <div class="container">
    <header>
+     <div class="next-event-stamp" aria-label="Next event May 2027">
+       <span class="stamp-label" id="stamp-label">NEXT EVENT</span>
+       <span class="stamp-month" id="stamp-month">MAY</span>
+       <span class="stamp-year">2027</span>
+     </div>
      <div class="lang-switcher" role="group" aria-label="Language selector">
        <button class="lang-btn" onclick="setLanguage('en')"><span>🇬🇧</span> EN</button>
        <button class="lang-btn" onclick="setLanguage('tr')"><span>🇹🇷</span> TR</button>
@@ -456,6 +501,7 @@
        when: "Acapulco Resort Convention SPA Hotel, Çatalköy, Girne · 26 October 2026 · 18:00–20:00",
        freeBadge: "Free entry",
        nextEvent: "The next event will take place in May 2027. Further details will be announced.",
+       stampLabel: "NEXT EVENT", stampMonth: "MAY",
        details: [
          { label: "Date", value: "26 October 2026" },
          { label: "Time", value: "18:00–20:00" },
@@ -503,6 +549,7 @@
        when: "Acapulco Resort Convention SPA Hotel, Çatalköy, Girne · 26 Ekim 2026 · 18:00–20:00",
        freeBadge: "Giriş ücretsiz",
        nextEvent: "Bir sonraki etkinlik Mayıs 2027'de düzenlenecektir. Ayrıntılar daha sonra duyurulacaktır.",
+       stampLabel: "SONRAKİ ETKİNLİK", stampMonth: "MAYIS",
        details: [
          { label: "Tarih", value: "26 Ekim 2026" },
          { label: "Saat", value: "18:00–20:00" },
@@ -550,6 +597,7 @@
        when: "Acapulco Resort Convention SPA Hotel, Çatalköy, Κερύνεια · 26 Οκτωβρίου 2026 · 18:00–20:00",
        freeBadge: "Δωρεάν είσοδος",
        nextEvent: "Η επόμενη εκδήλωση θα πραγματοποιηθεί τον Μάιο του 2027. Περισσότερες λεπτομέρειες θα ανακοινωθούν αργότερα.",
+       stampLabel: "ΕΠΟΜΕΝΗ ΕΚΔΗΛΩΣΗ", stampMonth: "ΜΑΪΟΣ",
        details: [
          { label: "Ημερομηνία", value: "26 Οκτωβρίου 2026" },
          { label: "Ώρα", value: "18:00–20:00" },
@@ -597,6 +645,7 @@
        when: "Esentepe, Severní Kypr · 26. října 2026 · 18:00–20:00",
        freeBadge: "Vstup zdarma",
        nextEvent: "Další setkání se uskuteční v květnu 2027. Podrobnosti zveřejníme později.",
+       stampLabel: "DALŠÍ SETKÁNÍ", stampMonth: "KVĚTEN",
        details: [
          { label: "Datum", value: "26. října 2026" },
          { label: "Čas", value: "18:00–20:00" },
@@ -644,6 +693,7 @@
        when: "Acapulco Resort Convention SPA Hotel, Çatalköy, Гирне · 26 октября 2026 · 18:00–20:00",
        freeBadge: "Вход свободный",
        nextEvent: "Следующее мероприятие состоится в мае 2027 года. Подробности будут объявлены позднее.",
+       stampLabel: "СЛЕДУЮЩЕЕ СОБЫТИЕ", stampMonth: "МАЙ",
        details: [
          { label: "Дата", value: "26 октября 2026" },
          { label: "Время", value: "18:00–20:00" },
@@ -705,6 +755,8 @@
      document.getElementById("txt-when").textContent = t.when;
      document.getElementById("txt-free").textContent = t.freeBadge;
      document.getElementById("txt-next-event").textContent = t.nextEvent;
+     document.getElementById("stamp-label").textContent = t.stampLabel;
+     document.getElementById("stamp-month").textContent = t.stampMonth;
 
      // Detaily semináře
      const detailsBox = document.getElementById("details-container");

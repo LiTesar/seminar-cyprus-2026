@@ -140,6 +140,19 @@
      letter-spacing: 0.05em;
    }
 
+   .next-event-notice {
+     margin: 1rem 1.5rem 0;
+     padding: 1rem 1.25rem;
+     border: 1px solid var(--border);
+     border-left: 4px solid var(--accent);
+     border-radius: var(--radius);
+     background: var(--sand);
+     color: var(--foreground);
+     text-align: center;
+     font-size: 0.95rem;
+     font-weight: 600;
+   }
+
    .details-grid {
      display: grid;
      grid-template-columns: 1fr;
@@ -354,6 +367,8 @@
   <span class="badge-free" id="txt-free">Vstup zdarma</span>
 </header>
 
+<section class="next-event-notice" id="txt-next-event" aria-live="polite">Další setkání se uskuteční v květnu 2027. Podrobnosti zveřejníme později.</section>
+
 <section class="details-grid" id="details-container">
   <!-- Generováno přes JavaScript -->
 </section>
@@ -440,6 +455,7 @@
        title: "Healthy Lifestyle & Longevity",
        when: "Acapulco Resort Convention SPA Hotel, Çatalköy, Girne · 26 October 2026 · 18:00–20:00",
        freeBadge: "Free entry",
+       nextEvent: "The next event will take place in May 2027. Further details will be announced.",
        details: [
          { label: "Date", value: "26 October 2026" },
          { label: "Time", value: "18:00–20:00" },
@@ -486,6 +502,7 @@
        title: "Sağlıklı Yaşam ve Uzun Ömür",
        when: "Acapulco Resort Convention SPA Hotel, Çatalköy, Girne · 26 Ekim 2026 · 18:00–20:00",
        freeBadge: "Giriş ücretsiz",
+       nextEvent: "Bir sonraki etkinlik Mayıs 2027'de düzenlenecektir. Ayrıntılar daha sonra duyurulacaktır.",
        details: [
          { label: "Tarih", value: "26 Ekim 2026" },
          { label: "Saat", value: "18:00–20:00" },
@@ -532,6 +549,7 @@
        title: "Υγιεινός Τρόπος Ζωής και Μακροζωία",
        when: "Acapulco Resort Convention SPA Hotel, Çatalköy, Κερύνεια · 26 Οκτωβρίου 2026 · 18:00–20:00",
        freeBadge: "Δωρεάν είσοδος",
+       nextEvent: "Η επόμενη εκδήλωση θα πραγματοποιηθεί τον Μάιο του 2027. Περισσότερες λεπτομέρειες θα ανακοινωθούν αργότερα.",
        details: [
          { label: "Ημερομηνία", value: "26 Οκτωβρίου 2026" },
          { label: "Ώρα", value: "18:00–20:00" },
@@ -578,6 +596,7 @@
        title: "Zdravý životní styl a dlouhověkost",
        when: "Esentepe, Severní Kypr · 26. října 2026 · 18:00–20:00",
        freeBadge: "Vstup zdarma",
+       nextEvent: "Další setkání se uskuteční v květnu 2027. Podrobnosti zveřejníme později.",
        details: [
          { label: "Datum", value: "26. října 2026" },
          { label: "Čas", value: "18:00–20:00" },
@@ -624,6 +643,7 @@
        title: "Здоровый образ жизни и долголетие",
        when: "Acapulco Resort Convention SPA Hotel, Çatalköy, Гирне · 26 октября 2026 · 18:00–20:00",
        freeBadge: "Вход свободный",
+       nextEvent: "Следующее мероприятие состоится в мае 2027 года. Подробности будут объявлены позднее.",
        details: [
          { label: "Дата", value: "26 октября 2026" },
          { label: "Время", value: "18:00–20:00" },
@@ -684,6 +704,7 @@
      document.getElementById("txt-title").textContent = t.title;
      document.getElementById("txt-when").textContent = t.when;
      document.getElementById("txt-free").textContent = t.freeBadge;
+     document.getElementById("txt-next-event").textContent = t.nextEvent;
 
      // Detaily semináře
      const detailsBox = document.getElementById("details-container");

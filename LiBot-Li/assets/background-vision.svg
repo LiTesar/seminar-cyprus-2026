@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000"><defs>
+<radialGradient id="bg" cx="70%" cy="42%"><stop stop-color="#0b2a48"/><stop offset=".42" stop-color="#061322"/><stop offset="1" stop-color="#02050a"/></radialGradient>
+<linearGradient id="cyan"><stop stop-color="#72eaff"/><stop offset="1" stop-color="#1678ff"/></linearGradient>
+<linearGradient id="gold"><stop stop-color="#ffc65a"/><stop offset="1" stop-color="#ff8f3d"/></linearGradient>
+<filter id="g"><feGaussianBlur stdDeviation="12"/></filter>
+</defs>
+<rect width="1600" height="1000" fill="url(#bg)"/>
+<g opacity=".22" filter="url(#g)"><circle cx="1240" cy="380" r="220" fill="#249cff"/><circle cx="410" cy="720" r="180" fill="#7048ff"/></g>
+<g fill="none" stroke="#63dfff" stroke-opacity=".16">
+<ellipse cx="1050" cy="470" rx="430" ry="250" transform="rotate(-18 1050 470)"/><ellipse cx="1050" cy="470" rx="350" ry="190" transform="rotate(22 1050 470)"/>
+<circle cx="1050" cy="470" r="145"/><circle cx="1050" cy="470" r="70"/>
+</g>
+<g fill="none" stroke="url(#cyan)" stroke-opacity=".24"><path d="M90 760 C390 560 520 830 820 620 S1230 330 1510 510"/><path d="M120 820 C430 610 590 900 900 650 S1250 410 1510 560"/></g>
+<g fill="none" stroke="url(#gold)" stroke-opacity=".22"><path d="M900 140h330l90 90v170"/><path d="M1020 260h210M1020 300h150M1020 340h95"/></g>
+<g fill="#72eaff"><circle cx="1050" cy="470" r="4"/><circle cx="620" cy="690" r="3"/><circle cx="1330" cy="270" r="3"/></g>
+<g font-family="Arial,Helvetica,sans-serif" letter-spacing="5" fill="#8fb5d2" opacity=".62"><text x="78" y="105" font-size="15">vision</text><text x="78" y="930" font-size="11">LIBOT / LI · HUMAN · CONTEXT · INTELLIGENCE · SYSTEM VISUALIZATION</text></g>
+<g stroke="#72eaff" stroke-opacity=".11"><path d="M0 180h1600M0 360h1600M0 540h1600M0 720h1600M200 0v1000M400 0v1000M600 0v1000M800 0v1000M1000 0v1000M1200 0v1000M1400 0v1000"/></g>
+</svg>

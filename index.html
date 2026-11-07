@@ -1,862 +1,120 @@
-<!DOCTYPE html>
-
+<!doctype html>
 <html lang="cs">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Healthy Lifestyle &amp; Longevity Seminar | Esentepe, Cyprus 2026</title>
-
-  <!-- Písma -->
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
- <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <style>
-   :root {
-     --radius: 0.75rem;
-     --background: #fbfbf7;
-     --foreground: #22372b;
-     --card: #ffffff;
-     --primary: #2d6a4f;
-     --primary-hover: #22543d;
-     --primary-foreground: #ffffff;
-     --secondary: #f0f2eb;
-     --muted: #f4f5ee;
-     --muted-foreground: #5a6e60;
-     --accent: #d97706;
-     --accent-foreground: #ffffff;
-     --border: #e2e5d8;
-     --sand: #f5f3e9;
-     --destructive: #dc2626;
-     --font-display: "Fraunces", Georgia, serif;
-     --font-sans: "Karla", system-ui, -apple-system, sans-serif;
-     --shadow-card: 0 24px 60px -24px rgba(45, 106, 79, 0.25);
-   }
-
-   * {
-     box-sizing: border-box;
-     margin: 0;
-     padding: 0;
-     border-color: var(--border);
-   }
-
-   body {
-     background-image: url("./public/pozadi.png");
-     background-size: cover;
-     background-position: center top;
-     background-attachment: fixed;
-     background-color: var(--background);
-     color: var(--foreground);
-     font-family: var(--font-sans);
-     line-height: 1.5;
-     padding: 2rem 1rem;
-     min-height: 100vh;
-     display: flex;
-     justify-content: center;
-     align-items: flex-start;
-   }
-
-   .container {
-     width: 100%;
-     max-width: 680px;
-     background: var(--card);
-     border-radius: 1.5rem;
-     overflow: hidden;
-     box-shadow: var(--shadow-card);
-     border: 1px solid var(--border);
-   }
-
-   header {
-     position: relative;
-     background:
-       linear-gradient(180deg, rgba(7, 43, 58, 0.22), rgba(7, 43, 58, 0.12)),
-       url("./public/pozadi.png") center center / cover no-repeat;
-     color: var(--primary-foreground);
-     padding: 3rem 1.5rem 2.5rem;
-     text-align: center;
-   }
-
-
-   .next-event-stamp {
-     position: absolute;
-     z-index: 2;
-     top: 16px;
-     right: 18px;
-     width: 112px;
-     height: 112px;
-     display: flex;
-     flex-direction: column;
-     align-items: center;
-     justify-content: center;
-     gap: 2px;
-     border: 3px double #fff3d0;
-     outline: 1px solid rgba(255,255,255,.75);
-     outline-offset: 4px;
-     border-radius: 50%;
-     background: #a93625;
-     color: #fffdf5;
-     box-shadow: 0 5px 18px rgba(0,0,0,.3);
-     transform: rotate(10deg);
-     text-align: center;
-     text-transform: uppercase;
-     font-weight: 700;
-     letter-spacing: .08em;
-     line-height: 1.05;
-     pointer-events: none;
-   }
-   .next-event-stamp .stamp-label { font-size: .56rem; }
-   .next-event-stamp .stamp-month { font-family: var(--font-display); font-size: 1.35rem; letter-spacing: .02em; }
-   .next-event-stamp .stamp-year { font-size: 1.12rem; letter-spacing: .16em; }
-   @media (max-width: 599px) {
-     header { padding-top: 6.5rem; }
-     .next-event-stamp { top: 14px; right: 18px; width: 88px; height: 88px; border-width: 2px; }
-     .next-event-stamp .stamp-label { font-size: .46rem; }
-     .next-event-stamp .stamp-month { font-size: 1.05rem; }
-     .next-event-stamp .stamp-year { font-size: .9rem; }
-   }
-
-   .lang-switcher {
-     display: inline-flex;
-     gap: 0.25rem;
-     background: rgba(255, 255, 255, 0.18);
-     backdrop-filter: blur(8px);
-     padding: 0.25rem;
-     border-radius: 9999px;
-     margin-bottom: 1.5rem;
-   }
-
-   .lang-btn {
-     background: transparent;
-     border: none;
-     color: rgba(255, 255, 255, 0.85);
-     font-weight: 600;
-     font-size: 0.8rem;
-     padding: 0.35rem 0.85rem;
-     border-radius: 9999px;
-     cursor: pointer;
-     transition: all 0.2s ease;
-     display: flex;
-     align-items: center;
-     gap: 0.35rem;
-   }
-
-   .lang-btn.active {
-     background: #ffffff;
-     color: var(--foreground);
-     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-   }
-
-   .kicker {
-     font-size: 0.75rem;
-     text-transform: uppercase;
-     letter-spacing: 0.2em;
-     opacity: 0.85;
-     margin-bottom: 0.5rem;
-   }
-
-   h1 {
-     font-family: var(--font-display);
-     font-size: 2rem;
-     line-height: 1.25;
-     font-weight: 600;
-     margin-bottom: 0.75rem;
-   }
-
-   .when {
-     font-size: 0.95rem;
-     opacity: 0.9;
-     margin-bottom: 1.25rem;
-   }
-
-   .badge-free {
-     display: inline-block;
-     background: var(--accent);
-     color: var(--accent-foreground);
-     font-weight: 700;
-     font-size: 0.85rem;
-     padding: 0.35rem 1rem;
-     border-radius: 9999px;
-     letter-spacing: 0.05em;
-   }
-
-   .next-event-notice {
-     margin: 1rem 1.5rem 0;
-     padding: 1rem 1.25rem;
-     border: 1px solid var(--border);
-     border-left: 4px solid var(--accent);
-     border-radius: var(--radius);
-     background: var(--sand);
-     color: var(--foreground);
-     text-align: center;
-     font-size: 0.95rem;
-     font-weight: 600;
-   }
-
-   .details-grid {
-     display: grid;
-     grid-template-columns: 1fr;
-     gap: 0.85rem;
-     padding: 1.5rem 2rem;
-     background: var(--sand);
-     border-bottom: 1px solid var(--border);
-   }
-
-   @media (min-width: 600px) {
-     .details-grid {
-       grid-template-columns: 1fr 1fr;
-     }
-   }
-
-   .detail-item .label {
-     font-weight: 600;
-     font-size: 0.85rem;
-     color: var(--foreground);
-   }
-
-   .detail-item .value {
-     font-size: 0.85rem;
-     color: var(--muted-foreground);
-   }
-
-   .form-wrapper {
-     padding: 2rem;
-   }
-
-   @media (min-width: 600px) {
-     .form-wrapper {
-       padding: 2.5rem;
-     }
-   }
-
-   .form-group {
-     margin-bottom: 1.25rem;
-   }
-
-   label {
-     display: block;
-     font-size: 0.875rem;
-     font-weight: 600;
-     margin-bottom: 0.35rem;
-     color: var(--foreground);
-   }
-
-   .required {
-     color: var(--destructive);
-     margin-left: 0.2rem;
-   }
-
-   input, select, textarea {
-     width: 100%;
-     border-radius: var(--radius);
-     border: 1px solid var(--border);
-     background-color: var(--card);
-     padding: 0.75rem 0.9rem;
-     font-size: 0.95rem;
-     font-family: inherit;
-     color: var(--foreground);
-     transition: border-color 0.2s, box-shadow 0.2s;
-   }
-
-   input:focus, select:focus, textarea:focus {
-     outline: none;
-     border-color: var(--primary);
-     box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
-   }
-
-   .hint {
-     font-size: 0.75rem;
-     color: var(--muted-foreground);
-     margin-top: 0.3rem;
-   }
-
-   .checkbox-box {
-     display: flex;
-     align-items: flex-start;
-     gap: 0.75rem;
-     background: var(--muted);
-     padding: 1rem;
-     border-radius: var(--radius);
-     margin-bottom: 1.25rem;
-     font-size: 0.875rem;
-   }
-
-   .checkbox-box input[type="checkbox"] {
-     width: 1.2rem;
-     height: 1.2rem;
-     margin-top: 0.15rem;
-     cursor: pointer;
-     accent-color: var(--primary);
-   }
-
-   button[type="submit"] {
-     width: 100%;
-     background: var(--primary);
-     color: var(--primary-foreground);
-     font-family: inherit;
-     font-size: 1rem;
-     font-weight: 600;
-     padding: 0.9rem 1.5rem;
-     border-radius: var(--radius);
-     border: none;
-     cursor: pointer;
-     transition: transform 0.15s, background-color 0.15s;
-     box-shadow: 0 4px 12px rgba(45, 106, 79, 0.25);
-   }
-
-   button[type="submit"]:hover {
-     background: var(--primary-hover);
-     transform: translateY(-1px);
-   }
-
-
-   .ticket-box {
-     margin: 0 2rem;
-     padding: 1.25rem 1.35rem;
-     display: flex;
-     align-items: center;
-     justify-content: space-between;
-     gap: 1rem;
-     border: 1px solid var(--border);
-     border-radius: var(--radius);
-     background: linear-gradient(135deg, rgba(245,243,233,.96), rgba(255,255,255,.96));
-   }
-
-   .ticket-box h2 {
-     font-family: var(--font-display);
-     font-size: 1.25rem;
-     margin-bottom: .25rem;
-   }
-
-   .ticket-box p {
-     color: var(--muted-foreground);
-     font-size: .82rem;
-   }
-
-   .ticket-download {
-     display: inline-flex;
-     align-items: center;
-     justify-content: center;
-     white-space: nowrap;
-     background: var(--primary);
-     color: #fff;
-     text-decoration: none;
-     font-weight: 700;
-     padding: .75rem 1rem;
-     border-radius: var(--radius);
-   }
-
-   .ticket-download:hover { background: var(--primary-hover); }
-
-   @media (max-width: 599px) {
-     .ticket-box { flex-direction: column; align-items: stretch; margin: 0 1rem; }
-     .ticket-download { width: 100%; }
-   }
-
-   #thank-you {
-     display: none;
-     text-align: center;
-     padding: 2.5rem 1.5rem;
-     border: 1px solid rgba(45, 106, 79, 0.25);
-     background: rgba(45, 106, 79, 0.05);
-     border-radius: var(--radius);
-   }
-
-   #thank-you h2 {
-     font-family: var(--font-display);
-     font-size: 1.6rem;
-     margin-bottom: 0.75rem;
-     color: var(--foreground);
-   }
-
-   #thank-you p {
-     font-size: 0.9rem;
-     color: var(--muted-foreground);
-     margin-bottom: 1.5rem;
-   }
-
-   .btn-again {
-     background: #ffffff;
-     border: 1px solid var(--border);
-     padding: 0.5rem 1.25rem;
-     font-size: 0.85rem;
-     font-weight: 600;
-     border-radius: 0.5rem;
-     cursor: pointer;
-     color: var(--foreground);
-   }
- </style>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="LiBot/Li — inteligentní komunikační vrstva nad telefonem.">
+<title data-cs="LiBot/Li — Inteligentní komunikace" data-en="LiBot/Li — Intelligent Communication">LiBot/Li — Inteligentní komunikace</title>
+<link rel="stylesheet" href="./libot_li/style.css">
 </head>
 <body>
-
-  <div class="container">
-   <header>
-     <div class="next-event-stamp" aria-label="Next event May 2027">
-       <span class="stamp-label" id="stamp-label">NEXT EVENT</span>
-       <span class="stamp-month" id="stamp-month">MAY</span>
-       <span class="stamp-year">2027</span>
-     </div>
-     <div class="lang-switcher" role="group" aria-label="Language selector">
-       <button class="lang-btn" onclick="setLanguage('en')"><span>🇬🇧</span> EN</button>
-       <button class="lang-btn" onclick="setLanguage('tr')"><span>🇹🇷</span> TR</button>
-       <button class="lang-btn" onclick="setLanguage('el')"><span>🇬🇷</span> EL</button>
-       <button class="lang-btn active" onclick="setLanguage('cs')"><span>🇨🇿</span> CS</button>
-      <button class="lang-btn" onclick="setLanguage('ru')"><span>🇷🇺</span> RU</button>
-     </div>
-
-```
-  <p class="kicker" id="txt-kicker">Mezinárodní seminář</p>
-  <h1 id="txt-title">Zdravý životní styl a dlouhověkost</h1>
-  <p class="when" id="txt-when">Acapulco Resort Convention SPA Hotel, Çatalköy, Girne · 26. října 2026 · 18:00–20:00</p>
-  <span class="badge-free" id="txt-free">Vstup zdarma</span>
+<div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+<header class="site-header">
+  <a class="brand" href="#vize" aria-label="LiBot/Li">
+    <span class="logo-mark" aria-hidden="true"><i></i><i></i></span>
+    <span>LiBot <b>/ Li</b></span>
+  </a>
+  <nav aria-label="Hlavní navigace">
+    <a class="active" href="#vize" data-i="nav1">VIZE</a><a href="#technologie" data-i="nav2">TECHNOLOGIE</a><a href="#moznosti" data-i="nav3">MOŽNOSTI</a><a href="#architektura" data-i="nav4">ARCHITEKTURA</a><a href="#vyvoj" data-i="nav5">VÝVOJ</a><a href="#partnerstvi" data-i="nav6">PARTNERSTVÍ</a><a href="#kontakt" data-i="nav7">KONTAKT</a>
+  </nav>
+  <div class="langs"><button type="button" class="active" data-lang="cs">CZ</button><span>·</span><button type="button" data-lang="en">EN</button></div>
 </header>
 
-<section class="next-event-notice" id="txt-next-event" aria-live="polite">Další setkání se uskuteční v květnu 2027. Podrobnosti zveřejníme později.</section>
-
-<section class="details-grid" id="details-container">
-  <!-- Generováno přes JavaScript -->
+<main>
+<section id="vize" class="hero section">
+  <div class="hero-copy">
+    <div class="eyebrow" data-i="eyebrow">LI BOT / LI · INTELLIGENT COMMUNICATION · 2026</div>
+    <div class="hero-title">
+      <span class="line line-1" data-i="hero1">Když telefon</span>
+      <span class="line line-2" data-i="hero2">přestane být</span>
+      <span class="line line-3" data-i="hero3">jen telefonem.</span>
+    </div>
+    <p class="lead" data-i="heroLead">Nová komunikační vrstva propojuje člověka, hlas, realtime technologie a inteligenci — bez nutnosti měnit způsob, jakým komunikujete.</p>
+    <div class="hero-actions"><a class="primary" href="#technologie" data-i="ctaSystem">Prozkoumat systém <span>↓</span></a><a class="quiet" href="#architektura" data-i="ctaArchitecture">Architektura</a></div>
+  </div>
+  <div class="hero-visual" aria-hidden="true">
+    <div class="signal-ring ring-1"></div><div class="signal-ring ring-2"></div><div class="signal-ring ring-3"></div>
+    <div class="system-orbit"><span class="node n1">VOICE</span><span class="node n2">AI</span><span class="node n3">REALTIME</span><span class="node n4">TELEPHONY</span></div>
+    <div class="core">
+      <div class="core-glow"></div><div class="core-mark">Li</div><div class="core-label">COMMUNICATION CORE</div>
+    </div>
+    <div class="scanline"></div>
+  </div>
+  <div class="scroll-cue"><span></span> <span data-i="scroll">SCROLL TO EXPLORE</span></div>
 </section>
 
-<section class="ticket-box" aria-label="Invitation ticket">
-  <div>
-    <h2 id="txt-ticket-title">Vaše pozvánka</h2>
-    <p id="txt-ticket-note">Stáhněte si pozvánku, vytiskněte ji a vezměte ji s sebou.</p>
+<section id="technologie" class="section dark-panel">
+  <div class="section-head"><span>01</span><h2 data-i="techTitle">Technologie</h2><em data-i="techSub">Layers, not dependencies.</em></div>
+  <div class="statement" data-i="techStatement">Technologie nejsou cílem. Jsou to vyměnitelné vrstvy, které slouží jediné věci — inteligentní komunikaci.</div>
+  <div class="cards three">
+    <article><span class="icon">◉</span><h3 data-i="rtTitle">Realtime</h3><p data-i="rtText">Hlas a interakce bez klasického čekání na další krok.</p><div class="card-line"></div></article>
+    <article><span class="icon">◌</span><h3 data-i="multiTitle">Vícejazyčnost</h3><p data-i="multiText">Jedna relace může podle kontextu pracovat s více jazyky.</p><div class="card-line"></div></article>
+    <article><span class="icon">◇</span><h3 data-i="modTitle">Modularita</h3><p data-i="modText">Technologické vrstvy lze vyměnit bez přestavby celého systému.</p><div class="card-line"></div></article>
   </div>
-  <a class="ticket-download" id="ticket-download" href="./public/vstupenka-severni-kypr-adresa.svg" download>Stáhnout pozvánku</a>
 </section>
 
-<div class="form-wrapper">
-  <div id="thank-you">
-    <h2 id="txt-thanks-title">Děkujeme za přihlášku!</h2>
-    <p id="txt-thanks-body">Přesné místo konání semináře vám zašleme e-mailem nejpozději 23. října 2026.</p>
-    <button type="button" class="btn-again" onclick="resetForm()" id="txt-again">Přihlásit další firmu</button>
+<section id="moznosti" class="section purple">
+  <div class="section-head"><span>02</span><h2 data-i="modesTitle">Jedna komunikační vrstva · mnoho režimů</h2><em data-i="modesSub">One layer. Many modes.</em></div>
+  <p class="section-lead" data-i="modesLead">LiBot/Li není další izolovaná aplikace. Je to vrstva, která mění způsob, jakým člověk komunikuje se svým telefonem, službami i okolním světem.</p>
+  <div class="mode-grid">
+    <div><b data-i="voiceTitle">HLAS</b><span data-i="voiceText">Přirozená realtime komunikace.</span><i></i></div>
+    <div><b data-i="translationTitle">PŘEKLAD</b><span data-i="translationText">Vícejazyčný dialog bez změny rozhraní.</span><i></i></div>
+    <div><b data-i="intelligenceTitle">INTELIGENCE</b><span data-i="intelligenceText">Kontext, caller intelligence a řízené rozhodování.</span><i></i></div>
+    <div><b data-i="assistTitle">ASISTENCE</b><span data-i="assistText">Jedna vrstva pro více komunikačních scénářů.</span><i></i></div>
   </div>
+</section>
 
-  <form id="reg-form" onsubmit="handleFormSubmit(event)">
-    <div class="form-group">
-      <label for="fullName"><span id="lbl-fullName">Jméno a příjmení</span><span class="required">*</span></label>
-      <input type="text" id="fullName" name="fullName" required placeholder="Jan Novák">
-    </div>
-
-    <div class="form-group">
-      <label for="companyName"><span id="lbl-company">Název firmy / organizace</span><span class="required">*</span></label>
-      <input type="text" id="companyName" name="companyName" required placeholder="Korineum Golf & Beach Resort">
-    </div>
-
-    <div class="form-group">
-      <label for="companyAddress"><span id="lbl-address">Adresa firmy</span><span class="required">*</span></label>
-      <textarea id="companyAddress" name="companyAddress" rows="3" required placeholder="Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Girne"></textarea>
-    </div>
-
-    <div class="form-group">
-      <label for="email"><span id="lbl-email">E-mailová adresa</span><span class="required">*</span></label>
-      <input type="email" id="email" name="email" required placeholder="info@company.com">
-      <div class="hint" id="hint-email">Na tuto adresu zašleme potvrzení a přesné místo konání.</div>
-    </div>
-
-    <div class="form-group">
-      <label for="phone"><span id="lbl-phone">Telefonní číslo</span><span class="required">*</span></label>
-      <input type="tel" id="phone" name="phone" required placeholder="+90 392 900 10 00">
-    </div>
-
-    <div class="form-group">
-      <label for="participantCount"><span id="lbl-count">Počet účastníků z firmy</span><span class="required">*</span></label>
-      <input type="number" id="participantCount" name="participantCount" min="1" max="10" value="1" required>
-      <div class="hint" id="hint-count">Kolik osob z vaší firmy se semináře zúčastní? (max. 10)</div>
-    </div>
-
-    <div class="form-group">
-      <label for="category"><span id="lbl-category">Kategorie firmy</span></label>
-      <select id="category" name="category">
-        <!-- Možnosti generovány JavaScriptem -->
-      </select>
-    </div>
-
-    <div class="checkbox-box">
-      <input type="checkbox" id="confirmation" name="confirmation" required>
-      <label for="confirmation" style="margin-bottom:0; font-weight:normal; cursor:pointer;">
-        <span id="lbl-confirm">Potvrzuji svou účast na bezplatném semináři dne 26. října 2026 od 18:00 do 20:00 v Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Girne.</span>
-        <span class="required">*</span>
-      </label>
-    </div>
-
-    <div class="form-group">
-      <label for="notes"><span id="lbl-notes">Poznámky pro organizátory</span></label>
-      <textarea id="notes" name="notes" rows="3" placeholder="Máte-li speciální požadavky nebo otázky, napište je zde."></textarea>
-    </div>
-
-    <button type="submit" id="btn-submit">Odeslat přihlášku</button>
-  </form>
-</div>
-```
-
+<section id="architektura" class="section">
+  <div class="section-head"><span>03</span><h2 data-i="archTitle">Malé jádro · specializované cihly</h2><em data-i="archSub">Small core. Replaceable modules.</em></div>
+  <div class="architecture">
+    <div class="connection c1"></div><div class="connection c2"></div><div class="connection c3"></div><div class="connection c4"></div><div class="connection c5"></div><div class="connection c6"></div>
+    <div class="nucleus"><span>Li</span><small>CORE</small></div>
+    <div class="brick b1">AI ORCHESTRACE</div><div class="brick b2">REALTIME MEDIA</div><div class="brick b3">POLICY ENGINE</div><div class="brick b4">MEMORY GRAPH</div><div class="brick b5">TELEPHONY</div><div class="brick b6">VOICE / STT / TTS</div>
   </div>
+  <p class="architecture-note" data-i="archNote">Malé jádro. Specializované cihly. Jasně definovaná rozhraní. Technologie může růst bez toho, aby se systém změnil v neřízený monolit.</p>
+</section>
 
-  <script>
-   const translations = {
-     en: {
-       kicker: "International seminar",
-       title: "Healthy Lifestyle & Longevity",
-       when: "Acapulco Resort Convention SPA Hotel, Çatalköy, Girne · 26 October 2026 · 18:00–20:00",
-       freeBadge: "Free entry",
-       nextEvent: "The next event will take place in May 2027. Further details will be announced.",
-       stampLabel: "NEXT EVENT", stampMonth: "MAY",
-       details: [
-         { label: "Date", value: "26 October 2026" },
-         { label: "Time", value: "18:00–20:00" },
-         { label: "Venue", value: "Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Girne, Northern Cyprus" },
-         { label: "Attendees", value: "Experts from CZ, SK, PL, HU, DE, AT + local businesses" }
-       ],
-       fullName: "Full name",
-       fullNamePlaceholder: "John Smith",
-       company: "Company / organisation name",
-       companyPlaceholder: "Korineum Golf & Beach Resort",
-       address: "Company address",
-       addressPlaceholder: "Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Girne",
-       email: "Email address",
-       emailHint: "We will send the confirmation and exact venue to this address.",
-       phone: "Phone number",
-       count: "Number of attendees from your company",
-       countHint: "How many people from your company will attend? (max. 10)",
-       category: "Business category",
-       categoryPlaceholder: "-- Select a category --",
-       categories: [
-         "Hotel/Resort with Spa/Wellness",
-         "Therapist/Alternative healer",
-         "Yoga/Fitness studio",
-         "Health food/Organic products store",
-         "Nutrition specialist/Consultant",
-         "Restaurant/Café with healthy cuisine",
-         "Real estate/Residential project",
-         "Tourism organisation/NGO",
-         "Other"
-       ],
-       confirm: "I confirm my attendance at the free seminar on 26 October 2026, 18:00–20:00 at Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Girne.",
-       notes: "Notes for the organisers",
-       notesPlaceholder: "Any special requirements or questions? Write them here.",
-       submit: "Send registration",
-       thanksTitle: "Thank you for your registration!",
-       thanksBody: "Thank you. The venue is Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Girne, Northern Cyprus.",
-       again: "Register another company",
-       ticketTitle: "Your invitation",
-       ticketNote: "Download the invitation, print it and bring it with you.",
-       ticketDownload: "Download invitation"
-     },
-     tr: {
-       kicker: "Uluslararası seminer",
-       title: "Sağlıklı Yaşam ve Uzun Ömür",
-       when: "Acapulco Resort Convention SPA Hotel, Çatalköy, Girne · 26 Ekim 2026 · 18:00–20:00",
-       freeBadge: "Giriş ücretsiz",
-       nextEvent: "Bir sonraki etkinlik Mayıs 2027'de düzenlenecektir. Ayrıntılar daha sonra duyurulacaktır.",
-       stampLabel: "SONRAKİ ETKİNLİK", stampMonth: "MAYIS",
-       details: [
-         { label: "Tarih", value: "26 Ekim 2026" },
-         { label: "Saat", value: "18:00–20:00" },
-         { label: "Yer", value: "Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Girne, Kuzey Kıbrıs" },
-         { label: "Katılımcılar", value: "ÇEK, SK, PL, HU, DE, AT uzmanları + yerel işletmeler" }
-       ],
-       fullName: "Ad ve soyad",
-       fullNamePlaceholder: "Ahmet Yılmaz",
-       company: "Firma / kuruluş adı",
-       companyPlaceholder: "Korineum Golf & Beach Resort",
-       address: "Firma adresi",
-       addressPlaceholder: "Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Girne",
-       email: "E-posta adresi",
-       emailHint: "Onay ve kesin adres bu e-posta adresine gönderilecektir.",
-       phone: "Telefon numarası",
-       count: "Firmanızdan katılacak kişi sayısı",
-       countHint: "Firmanızdan kaç kişi katılacak? (en fazla 10)",
-       category: "Firma kategorisi",
-       categoryPlaceholder: "-- Kategori seçiniz --",
-       categories: [
-         "Otel/Resort, Spa/Wellness",
-         "Terapist/Alternatif şifacı",
-         "Yoga/Fitness stüdyosu",
-         "Sağlıklı gıda/Organik ürün mağazası",
-         "Beslenme uzmanı/Danışman",
-         "Sağlıklı mutfak sunan restoran/kafe",
-         "Emlak/Konut projesi",
-         "Turizm kuruluşu/STK",
-         "Diğer"
-       ],
-       confirm: "26 Ekim 2026 tarihinde 18:00–20:00 saatleri arasında Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Girne adresindeki ücretsiz seminere katılımımı onaylıyorum.",
-       notes: "Organizatörlere notlar",
-       notesPlaceholder: "Özel talep veya sorularınızı buraya yazabilirsiniz.",
-       submit: "Kaydı gönder",
-       thanksTitle: "Kaydınız için teşekkürler!",
-       thanksBody: "Etkinlik adresi: Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Girne.",
-       again: "Başka bir firma kaydet",
-       ticketTitle: "Davetiye",
-       ticketNote: "Davetiye'yi indirin, yazdırın ve yanınızda getirin.",
-       ticketDownload: "Davetiye'yi indir"
-     },
-     el: {
-       kicker: "Διεθνές σεμινάριο",
-       title: "Υγιεινός Τρόπος Ζωής και Μακροζωία",
-       when: "Acapulco Resort Convention SPA Hotel, Çatalköy, Κερύνεια · 26 Οκτωβρίου 2026 · 18:00–20:00",
-       freeBadge: "Δωρεάν είσοδος",
-       nextEvent: "Η επόμενη εκδήλωση θα πραγματοποιηθεί τον Μάιο του 2027. Περισσότερες λεπτομέρειες θα ανακοινωθούν αργότερα.",
-       stampLabel: "ΕΠΟΜΕΝΗ ΕΚΔΗΛΩΣΗ", stampMonth: "ΜΑΪΟΣ",
-       details: [
-         { label: "Ημερομηνία", value: "26 Οκτωβρίου 2026" },
-         { label: "Ώρα", value: "18:00–20:00" },
-         { label: "Τόπος", value: "Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Κερύνεια, Βόρεια Κύπρος" },
-         { label: "Συμμετέχοντες", value: "Ειδικοί από CZ, SK, PL, HU, DE, AT + τοπικές επιχειρήσεις" }
-       ],
-       fullName: "Ονοματεπώνυμο",
-       fullNamePlaceholder: "Γιώργος Παπαδόπουλος",
-       company: "Επωνυμία εταιρείας / οργανισμού",
-       companyPlaceholder: "Korineum Golf & Beach Resort",
-       address: "Διεύθυνση εταιρείας",
-       addressPlaceholder: "Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Κερύνεια",
-       email: "Διεύθυνση email",
-       emailHint: "Σε αυτή τη διεύθυνση θα σταλεί η επιβεβαίωση και ο ακριβής χώρος.",
-       phone: "Τηλέφωνο",
-       count: "Αριθμός συμμετεχόντων από την εταιρεία",
-       countHint: "Πόσα άτομα από την εταιρεία σας θα συμμετάσχουν; (έως 10)",
-       category: "Κατηγορία επιχείρησης",
-       categoryPlaceholder: "-- Επιλέξτε κατηγορία --",
-       categories: [
-         "Ξενοδοχείο/Resort με Spa/Wellness",
-         "Θεραπευτής/Εναλλακτική θεραπεία",
-         "Στούντιο γιόγκα/γυμναστήριο",
-         "Κατάστημα υγιεινής διατροφής/βιολογικών",
-         "Διατροφολόγος/Σύμβουλος",
-         "Εστιατόριο/Καφέ υγιεινής κουζίνας",
-         "Ακίνητα/Οικιστικό έργο",
-         "Τουριστικός οργανισμός/ΜΚΟ",
-         "Άλλο"
-       ],
-       confirm: "Επιβεβαιώνω τη συμμετοχή μου στο δωρεάν σεμινάριο στις 26 Οκτωβρίου 2026, 18:00–20:00 στο Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Κερύνεια.",
-       notes: "Σημειώσεις προς τους διοργανωτές",
-       notesPlaceholder: "Εάν έχετε ειδικές απαιτήσεις ή ερωτήσεις, γράψτε τις εδώ.",
-       submit: "Αποστολή εγγραφής",
-       thanksTitle: "Ευχαριστούμε για την εγγραφή σας!",
-       thanksBody: "Ο χώρος είναι: Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Κερύνεια, Βόρεια Κύπρος.",
-       again: "Εγγραφή άλλης εταιρείας",
-       ticketTitle: "Η πρόσκλησή σας",
-       ticketNote: "Κατεβάστε την πρόσκληση, εκτυπώστε την και φέρτε την μαζί σας.",
-       ticketDownload: "Λήψη πρόσκλησης"
-     },
-     cs: {
-       kicker: "Mezinárodní seminář",
-       title: "Zdravý životní styl a dlouhověkost",
-       when: "Esentepe, Severní Kypr · 26. října 2026 · 18:00–20:00",
-       freeBadge: "Vstup zdarma",
-       nextEvent: "Další setkání se uskuteční v květnu 2027. Podrobnosti zveřejníme později.",
-       stampLabel: "DALŠÍ SETKÁNÍ", stampMonth: "KVĚTEN",
-       details: [
-         { label: "Datum", value: "26. října 2026" },
-         { label: "Čas", value: "18:00–20:00" },
-         { label: "Místo", value: "Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Girne, Severní Kypr" },
-         { label: "Účastníci", value: "Odborníci z ČR, SK, PL, HU, DE, AT + místní firmy" }
-       ],
-       fullName: "Jméno a příjmení",
-       fullNamePlaceholder: "Jan Novák",
-       company: "Název firmy / organizace",
-       companyPlaceholder: "Korineum Golf & Beach Resort",
-       address: "Adresa firmy",
-       addressPlaceholder: "Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Girne",
-       email: "E-mailová adresa",
-       emailHint: "Na tuto adresu zašleme potvrzení a přesné místo konání.",
-       phone: "Telefonní číslo",
-       count: "Počet účastníků z firmy",
-       countHint: "Kolik osob z vaší firmy se semináře zúčastní? (max. 10)",
-       category: "Kategorie firmy",
-       categoryPlaceholder: "-- Vyberte kategorii --",
-       categories: [
-         "Hotel/Resort se Spa/Wellness",
-         "Terapeut/Alternativní léčitel",
-         "Jóga/Fitness studio",
-         "Obchod se zdravou výživou/Bio produkty",
-         "Nutriční specialista/Poradce",
-         "Restaurace/Café se zdravou kuchyní",
-         "Real Estate/Rezidenční projekt",
-         "Turistická organizace/Nezisková organizace",
-         "Jiné"
-       ],
-       confirm: "Potvrzuji svou účast na bezplatném semináři dne 26. října 2026 od 18:00 do 20:00 v Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Girne.",
-       notes: "Poznámky pro organizátory",
-       notesPlaceholder: "Máte-li speciální požadavky nebo otázky, napište je zde.",
-       submit: "Odeslat přihlášku",
-       thanksTitle: "Děkujeme za přihlášku!",
-       thanksBody: "Místo konání: Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Girne, Severní Kypr.",
-       again: "Přihlásit další firmu",
-       ticketTitle: "Vaše pozvánka",
-       ticketNote: "Stáhněte si pozvánku, vytiskněte ji a vezměte ji s sebou.",
-       ticketDownload: "Stáhnout pozvánku"
-     },
-     ru: {
-       kicker: "Международный семинар",
-       title: "Здоровый образ жизни и долголетие",
-       when: "Acapulco Resort Convention SPA Hotel, Çatalköy, Гирне · 26 октября 2026 · 18:00–20:00",
-       freeBadge: "Вход свободный",
-       nextEvent: "Следующее мероприятие состоится в мае 2027 года. Подробности будут объявлены позднее.",
-       stampLabel: "СЛЕДУЮЩЕЕ СОБЫТИЕ", stampMonth: "МАЙ",
-       details: [
-         { label: "Дата", value: "26 октября 2026" },
-         { label: "Время", value: "18:00–20:00" },
-         { label: "Место", value: "Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Girne, Северный Кипр" },
-         { label: "Участники", value: "Эксперты из CZ, SK, PL, HU, DE, AT + местные компании" }
-       ],
-       fullName: "Имя и фамилия",
-       fullNamePlaceholder: "Иван Иванов",
-       company: "Название компании / организации",
-       companyPlaceholder: "Korineum Golf & Beach Resort",
-       address: "Адрес компании",
-       addressPlaceholder: "Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Girne",
-       email: "Электронная почта",
-       emailHint: "На этот адрес мы отправим подтверждение и точное место проведения.",
-       phone: "Номер телефона",
-       count: "Количество участников от компании",
-       countHint: "Сколько человек от вашей компании примут участие? (макс. 10)",
-       category: "Категория компании",
-       categoryPlaceholder: "-- Выберите категорию --",
-       categories: [
-         "Отель/курорт со Spa/Wellness",
-         "Терапевт/специалист по альтернативным методам",
-         "Студия йоги/фитнеса",
-         "Магазин здорового питания/органических продуктов",
-         "Специалист по питанию/консультант",
-         "Ресторан/кафе со здоровой кухней",
-         "Недвижимость/жилой проект",
-         "Туристическая организация/НКО",
-         "Другое"
-       ],
-       confirm: "Подтверждаю своё участие в бесплатном семинаре 26 октября 2026 года с 18:00 до 20:00 в Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Гирне.",
-       notes: "Примечания для организаторов",
-       notesPlaceholder: "Если у вас есть особые пожелания или вопросы, напишите их здесь.",
-       submit: "Отправить регистрацию",
-       thanksTitle: "Спасибо за регистрацию!",
-       thanksBody: "Место проведения: Acapulco Resort Convention SPA Hotel, Besparmak Caddesi, Çatalköy, Гирне, Северный Кипр.",
-       again: "Зарегистрировать другую компанию",
-       ticketTitle: "Ваше приглашение",
-       ticketNote: "Скачайте приглашение, распечатайте его и возьмите с собой.",
-       ticketDownload: "Скачать приглашение"
-     }
-   };
+<section id="vyvoj" class="section dark-panel">
+  <div class="section-head"><span>04</span><h2 data-i="devTitle">Vývoj jako posloupnost ověřených bran</h2><em data-i="devSub">Build · verify · continue.</em></div>
+  <div class="timeline">
+    <div><span>01</span><h3 data-i="g1t">Hypotéza</h3><p data-i="g1d">Definovat problém a ověřit jeho smysl.</p></div><div><span>02</span><h3 data-i="g2t">Prototyp</h3><p data-i="g2d">Postavit nejmenší funkční řešení.</p></div><div><span>03</span><h3 data-i="g3t">Test</h3><p data-i="g3d">Ověřit chování v reálném prostředí.</p></div><div><span>04</span><h3 data-i="g4t">Brána</h3><p data-i="g4d">Teprve ověřená část pokračuje dál.</p></div>
+  </div>
+</section>
 
-   let currentLang = "cs";
+<section id="partnerstvi" class="section serious">
+  <div class="section-head"><span>05</span><h2 data-i="partnerTitle">Otevřeno seriózním technologiím</h2><em data-i="partnerSub">Built to connect.</em></div>
+  <p class="section-lead" data-i="partnerLead">LiBot/Li není uzamčený na jednoho dodavatele. Architektura počítá s kombinací specializovaných technologií a jejich řízenou výměnou.</p>
+  <div class="partner-line"><span>AI</span><span>VOICE</span><span>TELEPHONY</span><span>SECURITY</span><span>HARDWARE</span><span>INFRA</span></div>
+</section>
 
-   function setLanguage(lang) {
-     currentLang = lang;
-     const t = translations[lang];
-
-     // Tlačítka jazyků
-     document.querySelectorAll(".lang-btn").forEach((btn, index) => {
-       const langs = ["en", "tr", "el", "cs", "ru"];
-       btn.classList.toggle("active", langs[index] === lang);
-     });
-
-     // Texty hlavičky
-     document.getElementById("txt-kicker").textContent = t.kicker;
-     document.getElementById("txt-title").textContent = t.title;
-     document.getElementById("txt-when").textContent = t.when;
-     document.getElementById("txt-free").textContent = t.freeBadge;
-     document.getElementById("txt-next-event").textContent = t.nextEvent;
-     document.getElementById("stamp-label").textContent = t.stampLabel;
-     document.getElementById("stamp-month").textContent = t.stampMonth;
-
-     // Detaily semináře
-     const detailsBox = document.getElementById("details-container");
-     detailsBox.innerHTML = "";
-     t.details.forEach(d => {
-       const item = document.createElement("div");
-       item.className = "detail-item";
-       item.innerHTML = `<div class="label">${d.label}</div><div class="value">${d.value}</div>`;
-       detailsBox.appendChild(item);
-     });
-
-     // Formulářové popisky a placeholdery
-     document.getElementById("lbl-fullName").textContent = t.fullName;
-     document.getElementById("fullName").placeholder = t.fullNamePlaceholder;
-
-     document.getElementById("lbl-company").textContent = t.company;
-     document.getElementById("companyName").placeholder = t.companyPlaceholder;
-
-     document.getElementById("lbl-address").textContent = t.address;
-     document.getElementById("companyAddress").placeholder = t.addressPlaceholder;
-
-     document.getElementById("lbl-email").textContent = t.email;
-     document.getElementById("hint-email").textContent = t.emailHint;
-
-     document.getElementById("lbl-phone").textContent = t.phone;
-
-     document.getElementById("lbl-count").textContent = t.count;
-     document.getElementById("hint-count").textContent = t.countHint;
-
-     document.getElementById("lbl-category").textContent = t.category;
-    
-     const catSelect = document.getElementById("category");
-     catSelect.innerHTML = `<option value="">${t.categoryPlaceholder}</option>`;
-     t.categories.forEach((cat, idx) => {
-       const opt = document.createElement("option");
-       opt.value = "cat_" + idx;
-       opt.textContent = cat;
-       catSelect.appendChild(opt);
-     });
-
-     document.getElementById("lbl-confirm").textContent = t.confirm;
-
-     document.getElementById("lbl-notes").textContent = t.notes;
-     document.getElementById("notes").placeholder = t.notesPlaceholder;
-
-     document.getElementById("btn-submit").textContent = t.submit;
-     document.getElementById("txt-thanks-title").textContent = t.thanksTitle;
-     document.getElementById("txt-thanks-body").textContent = t.thanksBody;
-     document.getElementById("txt-again").textContent = t.again;
-     document.getElementById("txt-ticket-title").textContent = t.ticketTitle;
-     document.getElementById("txt-ticket-note").textContent = t.ticketNote;
-     document.getElementById("ticket-download").textContent = t.ticketDownload;
-   }
-
-   const REGISTRATION_ENDPOINT = "https://script.google.com/macros/s/AKfycbyS5lEIeerKwtGCyCXx0uxEU1ZK_dbJkvZzuCvD0y-hwenjXIoyQ1lvSgU2rL_7UxJo/exec";
-
-   async function handleFormSubmit(e) {
-     e.preventDefault();
-     const form = e.target;
-     const formData = new FormData(form);
-     const payload = new URLSearchParams();
-     payload.set("language", currentLang.toUpperCase());
-     payload.set("name", formData.get("fullName") || "");
-     payload.set("company", formData.get("companyName") || "");
-     payload.set("address", formData.get("companyAddress") || "");
-     payload.set("email", formData.get("email") || "");
-     payload.set("phone", formData.get("phone") || "");
-     payload.set("participants", formData.get("participantCount") || "");
-     payload.set("category", formData.get("category") || "");
-     payload.set("notes", formData.get("notes") || "");
-
-     const button = document.getElementById("btn-submit");
-     button.disabled = true;
-
-     try {
-       await fetch(REGISTRATION_ENDPOINT, {
-         method: "POST",
-         mode: "no-cors",
-         headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-         body: payload.toString()
-       });
-       form.style.display = "none";
-       document.getElementById("thank-you").style.display = "block";
-       window.scrollTo({ top: 0, behavior: "smooth" });
-     } catch (error) {
-       console.error("Chyba při odesílání registrace:", error);
-       button.disabled = false;
-       alert("Registraci se nepodařilo odeslat. Zkuste to prosím znovu.");
-     }
-   }
-
-   function resetForm() {
-     document.getElementById("reg-form").reset();
-     document.getElementById("reg-form").style.display = "block";
-     document.getElementById("thank-you").style.display = "none";
-   }
-
-   // Inicializace češtiny při načtení
-   setLanguage("cs");
- </script>
-
+<section id="kontakt" class="section contact">
+  <div class="section-head"><span>06</span><h2 data-i="contactTitle">Kontakt</h2><em data-i="contactSub">Start a conversation.</em></div>
+  <div class="contact-grid">
+    <div class="contact-copy">
+      <div class="eyebrow" data-i="contactEyebrow">LI BOT / LI · TECHNICAL CONTACT</div>
+      <h3 data-i="contactHeadline">Nechte technologie<br><span>mluvit.</span></h3>
+      <p data-i="contactLead">Pro technickou evaluaci, platformní spolupráci a diskusi o kompatibilitě technologií je připraven kontakt projektu LiBot/Li.</p>
+      <div class="contact-mark"><span class="logo-mark large" aria-hidden="true"><i></i><i></i></span><div><strong>LiBot / Li</strong><span>Intelligent Communication</span></div></div>
+    </div>
+    <div class="contact-card">
+      <div class="card-top"><span class="status"></span><span data-i="contactStatus">TECHNICKÝ KONTAKT PROJEKTU</span></div>
+      <div class="contact-name">Libor Tesař</div>
+      <div class="contact-row"><span>◉</span><div><small data-i="locationLabel">LOCATION</small><strong data-i="location">Prague · Czech Republic</strong></div></div>
+      <div class="contact-row"><span>✉</span><div><small>E-MAIL</small><a href="mailto:libot.video@gmail.com">libot.video@gmail.com</a></div></div>
+      <div class="contact-row"><span>↗</span><div><small data-i="webLabel">WEB</small><a href="https://www.cyprus-event.online/libotli.html" target="_blank" rel="noopener">www.cyprus-event.online/libotli.html</a></div></div>
+      <div class="contact-actions"><a href="mailto:libot.video@gmail.com" data-i="writeEmail">Napsat e-mail</a><a href="#vize" data-i="backTop">Zpět na začátek</a></div>
+    </div>
+  </div>
+</section>
+</main>
+<footer><span>LiBot/Li</span><span data-i="footer">Intelligent Communication · R&amp;D</span><span>© 2026</span></footer>
+<script>
+const LANG={
+cs:{nav1:"VIZE",nav2:"TECHNOLOGIE",nav3:"MOŽNOSTI",nav4:"ARCHITEKTURA",nav5:"VÝVOJ",nav6:"PARTNERSTVÍ",nav7:"KONTAKT",eyebrow:"LI BOT / LI · INTELLIGENT COMMUNICATION · 2026",hero1:"Když telefon",hero2:"přestane být",hero3:"jen telefonem.",heroLead:"Nová komunikační vrstva propojuje člověka, hlas, realtime technologie a inteligenci — bez nutnosti měnit způsob, jakým komunikujete.",ctaSystem:"Prozkoumat systém",ctaArchitecture:"Architektura",scroll:"SCROLL TO EXPLORE",techTitle:"Technologie",techSub:"Layers, not dependencies.",techStatement:"Technologie nejsou cílem. Jsou to vyměnitelné vrstvy, které slouží jediné věci — inteligentní komunikaci.",rtTitle:"Realtime",rtText:"Hlas a interakce bez klasického čekání na další krok.",multiTitle:"Vícejazyčnost",multiText:"Jedna relace může podle kontextu pracovat s více jazyky.",modTitle:"Modularita",modText:"Technologické vrstvy lze vyměnit bez přestavby celého systému.",modesTitle:"Jedna komunikační vrstva · mnoho režimů",modesSub:"One layer. Many modes.",modesLead:"LiBot/Li není další izolovaná aplikace. Je to vrstva, která mění způsob, jakým člověk komunikuje se svým telefonem, službami i okolním světem.",voiceTitle:"HLAS",voiceText:"Přirozená realtime komunikace.",translationTitle:"PŘEKLAD",translationText:"Vícejazyčný dialog bez změny rozhraní.",intelligenceTitle:"INTELIGENCE",intelligenceText:"Kontext, caller intelligence a řízené rozhodování.",assistTitle:"ASISTENCE",assistText:"Jedna vrstva pro více komunikačních scénářů.",archTitle:"Malé jádro · specializované cihly",archSub:"Small core. Replaceable modules.",archNote:"Malé jádro. Specializované cihly. Jasně definovaná rozhraní. Technologie může růst bez toho, aby se systém změnil v neřízený monolit.",devTitle:"Vývoj jako posloupnost ověřených bran",devSub:"Build · verify · continue.",g1t:"Hypotéza",g1d:"Definovat problém a ověřit jeho smysl.",g2t:"Prototyp",g2d:"Postavit nejmenší funkční řešení.",g3t:"Test",g3d:"Ověřit chování v reálném prostředí.",g4t:"Brána",g4d:"Teprve ověřená část pokračuje dál.",partnerTitle:"Otevřeno seriózním technologiím",partnerSub:"Built to connect.",partnerLead:"LiBot/Li není uzamčený na jednoho dodavatele. Architektura počítá s kombinací specializovaných technologií a jejich řízenou výměnou.",contactTitle:"Kontakt",contactSub:"Start a conversation.",contactEyebrow:"LI BOT / LI · TECHNICAL CONTACT",contactHeadline:"Nechte technologie<br><span>mluvit.</span>",contactLead:"Pro technickou evaluaci, platformní spolupráci a diskusi o kompatibilitě technologií je připraven kontakt projektu LiBot/Li.",contactStatus:"TECHNICKÝ KONTAKT PROJEKTU",locationLabel:"LOKALITA",location:"Praha · Česká republika",webLabel:"WEB",writeEmail:"Napsat e-mail",backTop:"Zpět na začátek",footer:"Intelligent Communication · R&D"},
+en:{nav1:"VISION",nav2:"TECHNOLOGY",nav3:"MODES",nav4:"ARCHITECTURE",nav5:"DEVELOPMENT",nav6:"PARTNERS",nav7:"CONTACT",eyebrow:"LiBot / Li · INTELLIGENT COMMUNICATION · 2026",hero1:"When a phone",hero2:"stops being",hero3:"just a phone.",heroLead:"A new communication layer connecting people, voice, realtime technology and intelligence — without changing the way you communicate.",ctaSystem:"Explore the system",ctaArchitecture:"Architecture",scroll:"SCROLL TO EXPLORE",techTitle:"Technology",techSub:"Layers, not dependencies.",techStatement:"Technology is not the destination. It is a set of replaceable layers built around one purpose — intelligent communication.",rtTitle:"Realtime",rtText:"Voice and interaction without the usual wait between steps.",multiTitle:"Multilingual",multiText:"A single session can move across languages as context requires.",modTitle:"Modular",modText:"Technology layers can be replaced without rebuilding the system around them.",modesTitle:"One communication layer · many modes",modesSub:"One layer. Many modes.",modesLead:"LiBot/Li is not another isolated app. It is a communication layer that can change how people interact with their phone, services and the world around them.",voiceTitle:"VOICE",voiceText:"Natural realtime communication.",translationTitle:"TRANSLATION",translationText:"Multilingual dialogue without changing the interface.",intelligenceTitle:"INTELLIGENCE",intelligenceText:"Context, caller intelligence and controlled decision-making.",assistTitle:"ASSISTANCE",assistText:"One layer supporting multiple communication scenarios.",archTitle:"A small core · specialized building blocks",archSub:"Small core. Replaceable modules.",archNote:"A small core. Specialized building blocks. Clearly defined interfaces. The technology can grow without turning the system into an uncontrolled monolith.",devTitle:"Development through verified gates",devSub:"Build · verify · continue.",g1t:"Hypothesis",g1d:"Define the problem and prove it is worth solving.",g2t:"Prototype",g2d:"Build the smallest working solution.",g3t:"Test",g3d:"Validate behavior in real operating conditions.",g4t:"Gate",g4d:"Only a verified component moves forward.",partnerTitle:"Open to serious technology",partnerSub:"Built to connect.",partnerLead:"LiBot/Li is not locked to a single vendor. The architecture is designed to combine specialized technologies and replace them in a controlled way.",contactTitle:"Contact",contactSub:"Start a conversation.",contactEyebrow:"LiBot / Li · TECHNICAL CONTACT",contactHeadline:"Let technology<br><span>speak.</span>",contactLead:"For technical evaluation, platform collaboration and discussions around technology compatibility, the LiBot/Li project is open for contact.",contactStatus:"PROJECT TECHNICAL CONTACT",locationLabel:"LOCATION",location:"Prague · Czech Republic",webLabel:"WEB",writeEmail:"Write an email",backTop:"Back to top",footer:"Intelligent Communication · R&D"}};
+function setLang(lang){document.documentElement.lang=lang;document.querySelectorAll('[data-i]').forEach(el=>el.innerHTML=LANG[lang][el.dataset.i]??el.innerHTML);document.querySelectorAll('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));try{localStorage.setItem('libot-lang',lang)}catch(e){}}
+(function(){let lang='cs';try{const v=localStorage.getItem('libot-lang');if(v==='cs'||v==='en')lang=v}catch(e){}document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));setLang(lang)})();
+</script>
+<script src="./libot_li/app.js"></script>
 </body>
 </html>

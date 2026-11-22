@@ -39,7 +39,7 @@ const saved=localStorage.getItem('libot-audio-vol');if(saved!==null){v.value=Mat
 function setup(){if(ctx)return;ctx=new (window.AudioContext||window.webkitAudioContext)();an=ctx.createAnalyser();an.fftSize=256;an.smoothingTimeConstant=.82;src=ctx.createMediaElementSource(A);src.connect(an);an.connect(ctx.destination)}
 function ui(on){pi.style.display=on?'none':'block';pa.style.display=on?'block':'none';b.setAttribute('aria-label',on?'Pozastavit OMNIA SOLUTA':'Přehrát OMNIA SOLUTA');st.textContent=on?'PLAYING · '+fmt(A.currentTime):'READY · '+fmt(A.currentTime);document.getElementById('audioPlayer').classList.toggle('playing',on)}
 function fmt(s){let m=Math.floor(s/60),q=Math.floor(s%60);return String(m).padStart(2,'0')+':'+String(q).padStart(2,'0')}
-async function play(){try{await audioReady;setup();if(ctx.state==='suspended')await ctx.resume();await A.play();ui(true);draw()}catch(e){st.textContent='CLICK TO ENABLE AUDIO'}}function pause(){A.pause();ui(false)}
+async function play(){try{await window.__OMNIA_AUDIO_PROMISE;setup();if(ctx.state==='suspended')await ctx.resume();await A.play();ui(true);draw()}catch(e){st.textContent='CLICK TO ENABLE AUDIO'}}function pause(){A.pause();ui(false)}
 async function toggle(){A.paused?await play():pause()}b.onclick=toggle;hp.onclick=toggle;v.oninput=()=>{A.volume=+v.value/100;localStorage.setItem('libot-audio-vol',A.volume)};A.ontimeupdate=()=>{if(!A.paused)st.textContent='PLAYING · '+fmt(A.currentTime)};A.onpause=()=>ui(false);
 function draw(){if(A.paused||!an)return;const d=new Uint8Array(an.frequencyBinCount);an.getByteFrequencyData(d);bars.forEach((x,i)=>x.style.height=(8+(d[i*5]||0)/255*92)+'%');raf=requestAnimationFrame(draw)}
 ui(false);

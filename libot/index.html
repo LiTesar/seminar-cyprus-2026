@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#010205">
+<meta name="description" content="LiBot / Li — proprietární hlasová a komunikační vrstva pro ty, kdo si nemohou dovolit ztratit jediný požadavek. Ukazujeme výsledek, ne mechanismus.">
+<title>LiBot / Li — Každý hovor, který je už vyřešený.</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='3' y='3' width='58' height='58' rx='15' fill='%23010205' stroke='%2300D2FF' stroke-width='2.4'/%3E%3Cpath d='M50 5 Q59 7 59 16' stroke='%23FFB800' stroke-width='3.4' fill='none' stroke-linecap='round'/%3E%3Cpath d='M22 15 L22 35 Q22 46 33 46 L38 46' stroke='%23F2F8FF' stroke-width='9' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M46 32 L46 42' stroke='%2300D2FF' stroke-width='8' stroke-linecap='round'/%3E%3Ccircle cx='46' cy='20' r='5.4' fill='%23F2F8FF'/%3E%3Cpath d='M37 13 Q33 20 37 27 M55 13 Q59 20 55 27' stroke='%2300D2FF' stroke-width='2.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+/* ================= TOKENY ================= */
+:root{
+  --void:#010205; --bg:#030508; --bg2:#060B14;
+  --ice:#00D2FF; --cobalt:#0044FF; --gold:#FFB800; --fiber:#F2F8FF;
+  --gold-soft:#FFE9B0; --ice-soft:#7FE4FF;
+  --muted:#A7B8CF; --dim:#5F7392; --faint:#33465F;
+  --line:rgba(0,210,255,.15); --line2:rgba(0,210,255,.34);
+  --glass:rgba(4,8,15,.72);
+  --f-d:"Avenir Next","Avenir","Segoe UI Variable Display","SF Pro Display","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --f-b:-apple-system,BlinkMacSystemFont,"Segoe UI","SF Pro Text",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --f-m:ui-monospace,"SF Mono","Cascadia Code","JetBrains Mono",Consolas,"Liberation Mono",monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --sp:0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-color:#00A6E0 #020409;scrollbar-width:thin}
+html,body{overflow-x:hidden}
+body{
+  background:var(--void); color:var(--fiber);
+  font:400 16px/1.7 var(--f-b);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  overflow-wrap:break-word; min-height:100vh;
+}
+::selection{background:rgba(0,210,255,.3);color:#fff}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:#020409;border-left:1px solid rgba(0,210,255,.08)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--ice),var(--cobalt));border-radius:8px;border:2px solid #020409}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--gold),#C77F00)}
+img,svg,canvas{max-width:100%}
+a{color:var(--ice)}
+button{font-family:inherit}
+.mono{font-family:var(--f-m)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:fixed;top:-64px;left:16px;z-index:100;background:var(--gold);color:#1A1200;padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none;transition:top .25s}
+.skip:focus{top:12px}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+
+/* ================= GLOBÁLNÍ VRSTVY ================= */
+#field{position:fixed;inset:0;z-index:0;pointer-events:none;display:block}
+.aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.aurora i{position:absolute;border-radius:50%}
+.aurora i:nth-child(1){width:70vmax;height:70vmax;left:-24vmax;top:-28vmax;background:radial-gradient(circle,rgba(0,68,255,.14),transparent 62%);animation:drift1 52s ease-in-out infinite alternate}
+.aurora i:nth-child(2){width:56vmax;height:56vmax;right:-24vmax;bottom:-30vmax;background:radial-gradient(circle,rgba(255,184,0,.06),transparent 60%);animation:drift2 64s ease-in-out infinite alternate}
+@keyframes drift1{to{transform:translate(6vmax,5vmax) scale(1.1)}}
+@keyframes drift2{to{transform:translate(-5vmax,-6vmax) scale(1.14)}}
+.grain{position:fixed;inset:-50%;width:200%;height:200%;z-index:60;pointer-events:none;opacity:.055;mix-blend-mode:soft-light;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+  animation:grain 1.3s steps(5) infinite}
+@keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-1.2%,1%)}50%{transform:translate(1%,-1.2%)}75%{transform:translate(-1%,-.8%)}100%{transform:translate(1.2%,1%)}}
+main,footer{position:relative;z-index:1}
+
+/* ================= PLOVOUCÍ NAVIGACE ================= */
+.nav{position:fixed;top:12px;left:50%;transform:translateX(-50%);width:min(1240px,calc(100% - 24px));z-index:50;height:64px;border-radius:18px;
+  background:rgba(3,5,8,.74);-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);
+  border:1px solid rgba(0,210,255,.17);box-shadow:0 18px 50px rgba(0,0,0,.55);
+  transition:top .3s,background .3s,border-color .3s,height .3s;animation:navIn .9s var(--ease) .1s both}
+@keyframes navIn{from{opacity:0;transform:translateX(-50%) translateY(-16px)}to{opacity:1;transform:translateX(-50%)}}
+.nav.scrolled{top:8px;height:58px;background:rgba(2,4,7,.88);border-color:rgba(0,210,255,.28)}
+.nav-in{height:100%;padding:0 14px;display:flex;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--fiber);flex:none}
+.brand svg{width:34px;height:34px;display:block}
+.brand-name{font:800 16.5px/1.2 var(--f-d);letter-spacing:-.01em;white-space:nowrap}
+.brand-name .slash{color:var(--ice);font-style:normal;display:inline-block;transform:skewX(-14deg);padding:0 3px;font-weight:700}
+.ph-dot{width:6px;height:6px;border-radius:50%;background:var(--ice);box-shadow:0 0 9px var(--ice);animation:pulse 1.7s ease-in-out infinite;flex:none;transition:background .4s,box-shadow .4s}
+.ph-dot.locked{background:var(--gold);box-shadow:0 0 10px var(--gold);animation:none}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)}}
+.nav-links{display:flex;gap:2px;margin-left:auto}
+.nav-links a{position:relative;font:600 11px/1.6 var(--f-m);letter-spacing:.15em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:11px 12px;border-radius:9px;transition:color .25s,background .25s}
+.nav-links a:hover{color:var(--fiber);background:rgba(0,210,255,.07)}
+.nav-links a::after{content:"";position:absolute;left:12px;right:12px;bottom:5px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--ice),var(--cobalt));transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease);box-shadow:0 0 8px rgba(0,210,255,.6)}
+.nav-links a.active{color:var(--ice)}
+.nav-links a.active::after{transform:scaleX(1)}
+.nav-tools{display:flex;align-items:center;gap:9px;margin-left:6px}
+.lang{display:flex;border:1px solid var(--line);border-radius:10px;padding:3px;background:rgba(2,5,10,.6)}
+.lang-btn{border:0;background:none;color:var(--dim);font:700 11px/1 var(--f-m);letter-spacing:.08em;padding:7px 9px;border-radius:7px;cursor:pointer;transition:.25s}
+.lang-btn:hover{color:var(--fiber)}
+.lang-btn[aria-pressed="true"]{color:var(--gold);background:rgba(255,184,0,.12);box-shadow:inset 0 0 0 1px rgba(255,184,0,.35)}
+.snd{display:flex;align-items:center;gap:6px;height:37px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:rgba(2,5,10,.6);color:var(--dim);cursor:pointer;transition:.25s}
+.snd svg{width:16px;height:16px;display:block}
+.snd .snd-lbl{font:700 9.5px/1 var(--f-m);letter-spacing:.12em;text-transform:uppercase}
+.snd.on{color:var(--ice);border-color:rgba(0,210,255,.42);box-shadow:0 0 14px rgba(0,210,255,.14)}
+.snd:hover{border-color:var(--line2)}
+.nav-cta{flex:none}
+.burger{display:none;width:40px;height:40px;border:1px solid var(--line);border-radius:10px;background:rgba(2,5,10,.6);cursor:pointer;position:relative;flex:none}
+.burger span{position:absolute;left:10px;right:10px;height:2px;border-radius:2px;background:var(--ice);transition:.3s var(--ease)}
+.burger span:nth-child(1){top:13px}.burger span:nth-child(2){top:19px}.burger span:nth-child(3){top:25px}
+body.menu-open .burger span:nth-child(1){top:19px;transform:rotate(45deg)}
+body.menu-open .burger span:nth-child(2){opacity:0}
+body.menu-open .burger span:nth-child(3){top:19px;transform:rotate(-45deg)}
+.progress{position:absolute;left:14px;right:14px;bottom:-1px;height:2px;border-radius:2px;transform-origin:left;transform:scaleX(var(--sp));background:linear-gradient(90deg,var(--ice),var(--cobalt) 55%,var(--gold));box-shadow:0 0 12px rgba(0,210,255,.55);pointer-events:none}
+.menu{position:fixed;inset:0;z-index:55;background:rgba(1,2,5,.95);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);
+  display:flex;flex-direction:column;justify-content:center;padding:100px clamp(24px,7vw,48px) 48px;
+  opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s}
+body.menu-open .menu{opacity:1;visibility:visible}
+body.menu-open{overflow:hidden}
+.menu a.m-link{display:flex;align-items:baseline;gap:16px;text-decoration:none;color:var(--fiber);font:800 clamp(26px,7vw,34px)/1.3 var(--f-d);letter-spacing:-.01em;padding:14px 0;border-bottom:1px solid rgba(0,210,255,.1);
+  opacity:0;transform:translateY(16px);transition:opacity .5s var(--ease),transform .5s var(--ease),color .25s}
+.menu a.m-link em{font:600 12px var(--f-m);color:var(--gold);font-style:normal;letter-spacing:.15em}
+.menu a.m-link:hover{color:var(--ice)}
+body.menu-open .menu a.m-link{opacity:1;transform:none;transition-delay:calc(.06s*var(--i))}
+.menu .m-cta{margin-top:26px;opacity:0;transform:translateY(16px);transition:opacity .5s var(--ease) .3s,transform .5s var(--ease) .3s}
+body.menu-open .menu .m-cta{opacity:1;transform:none}
+.menu .m-foot{margin-top:26px;font:500 11px/1.7 var(--f-m);letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
+
+/* ================= KOMPONENTY ================= */
+.wrap{max-width:1220px;margin:0 auto;padding:0 clamp(20px,4vw,44px)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 26px;border-radius:13px;font:700 15px/1.3 var(--f-b);letter-spacing:.01em;border:1px solid transparent;cursor:pointer;text-decoration:none;position:relative;overflow:hidden;transition:transform .22s var(--ease),box-shadow .3s,background .3s,border-color .3s;-webkit-tap-highlight-color:transparent}
+.btn:active{transform:scale(.97)}
+.btn svg{width:16px;height:16px;flex:none}
+.btn-gold{background:linear-gradient(135deg,#FFD873 0%,var(--gold) 46%,#E08900 100%);color:#1A1200;box-shadow:0 6px 26px rgba(255,184,0,.26),0 2px 8px rgba(255,184,0,.22)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 12px 38px rgba(255,184,0,.4),0 3px 12px rgba(255,184,0,.3)}
+.btn-ghost{background:rgba(0,210,255,.06);border-color:rgba(0,210,255,.3);color:var(--ice)}
+.btn-ghost:hover{transform:translateY(-2px);background:rgba(0,210,255,.12);border-color:rgba(0,210,255,.55);box-shadow:0 8px 28px rgba(0,68,255,.2)}
+.btn-sm{padding:11px 17px;font-size:13px;border-radius:11px}
+.btn-sheen::after{content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-18deg);animation:sheen 5.6s ease-in-out infinite}
+@keyframes sheen{0%,70%{left:-70%}88%,100%{left:135%}}
+.eyebrow{display:inline-flex;align-items:center;gap:11px;font:600 11px/1.7 var(--f-m);letter-spacing:.22em;text-transform:uppercase;color:var(--ice)}
+.eyebrow::before{content:"";width:26px;height:1px;background:linear-gradient(90deg,var(--ice),transparent);flex:none}
+.eyebrow.gold{color:var(--gold)}
+.eyebrow.gold::before{background:linear-gradient(90deg,var(--gold),transparent)}
+.eyebrow .live-dot{width:7px;height:7px;border-radius:50%;background:var(--ice);box-shadow:0 0 10px var(--ice);animation:pulse 1.7s ease-in-out infinite;flex:none}
+.sec{padding:clamp(88px,12vh,156px) 0;position:relative;scroll-margin-top:100px;
+  background:radial-gradient(120% 100% at 50% 50%,rgba(1,2,5,.87) 42%,rgba(1,2,5,.66) 100%);
+  border-top:1px solid rgba(0,210,255,.09)}
+.sec::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0}
+.sec .wrap{position:relative;z-index:1}
+#paradigma::before{background:radial-gradient(40% 44% at 8% 16%,rgba(0,68,255,.12),transparent 70%),radial-gradient(32% 36% at 92% 84%,rgba(0,210,255,.06),transparent 70%)}
+#schopnosti::before{background:radial-gradient(38% 40% at 88% 8%,rgba(255,184,0,.06),transparent 70%),radial-gradient(40% 44% at 6% 92%,rgba(0,68,255,.12),transparent 70%)}
+#dopad::before{background:radial-gradient(46% 36% at 50% 0%,rgba(0,210,255,.08),transparent 70%),radial-gradient(36% 40% at 94% 92%,rgba(0,68,255,.1),transparent 70%)}
+#kapacita::before{background:radial-gradient(40% 44% at 12% 24%,rgba(255,184,0,.11),transparent 70%),radial-gradient(30% 34% at 88% 68%,rgba(255,184,0,.05),transparent 70%),radial-gradient(40% 36% at 60% 100%,rgba(0,68,255,.08),transparent 70%)}
+.sec-title{font:800 clamp(30px,4.4vw,52px)/1.18 var(--f-d);letter-spacing:-.022em;margin:16px 0 14px;padding:.05em 0}
+.sec-lede{color:var(--muted);font-size:16.5px;line-height:1.75;max-width:62ch}
+.js .rv{opacity:0;transform:translateY(26px);transition:opacity .9s var(--ease) var(--d,0s),transform .9s var(--ease) var(--d,0s)}
+.js .rv.in{opacity:1;transform:none}
+
+/* ================= HERO ================= */
+#hero{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;padding-top:118px;scroll-margin-top:100px}
+#hero .wrap{flex:1;display:flex;flex-direction:column;justify-content:center;width:100%;padding-bottom:26px}
+.hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(26px,4vw,54px);align-items:center;width:100%}
+.hero-copy{max-width:640px;position:relative}
+.hero-copy::before{content:"";position:absolute;inset:-40px -60px;z-index:-1;background:radial-gradient(70% 70% at 40% 50%,rgba(1,2,5,.72),transparent 78%);pointer-events:none}
+.hero-copy h1{font:800 clamp(40px,6vw,74px)/1.17 var(--f-d);letter-spacing:-.028em;margin:18px 0 20px;padding:.06em 0}
+.hero-copy h1 .h1-line{display:block;background:linear-gradient(100deg,#F2F8FF 0%,#7FE4FF 17%,#00D2FF 31%,#3D6BFF 45%,#F2F8FF 55%,#FFD873 68%,#FFB800 79%,#7FE4FF 92%,#F2F8FF 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 7.5s linear infinite;padding:.04em 0}
+.hero-copy h1 .h1-gold{background:linear-gradient(100deg,#FFE9B0 0%,#FFB800 22%,#FFD873 38%,#F2F8FF 52%,#7FE4FF 66%,#FFB800 82%,#FFE9B0 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;animation-delay:-2.6s}
+@keyframes shimmer{0%{background-position:0% 50%}100%{background-position:-220% 50%}}
+@supports not ((-webkit-background-clip:text) or (background-clip:text)){.hero-copy h1 .h1-line{color:var(--fiber);background:none}}
+.hero-sub{color:var(--muted);font-size:clamp(15.5px,1.3vw,17.5px);line-height:1.78;max-width:56ch;margin-bottom:28px}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap}
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}
+.pillar{display:flex;gap:11px;align-items:flex-start;padding:14px 15px;border:1px solid rgba(0,210,255,.15);border-radius:14px;background:linear-gradient(160deg,rgba(0,68,255,.11),rgba(2,4,8,.62));transition:border-color .3s,box-shadow .3s,transform .3s var(--ease)}
+.pillar:hover{border-color:rgba(0,210,255,.4);box-shadow:0 0 24px rgba(0,68,255,.16);transform:translateY(-2px)}
+.pillar svg{width:20px;height:20px;flex:none;color:var(--ice);margin-top:2px;filter:drop-shadow(0 0 6px rgba(0,210,255,.5))}
+.pillar:nth-child(2) svg{color:var(--gold);filter:drop-shadow(0 0 6px rgba(255,184,0,.5))}
+.pillar b{display:block;font:700 12.5px/1.5 var(--f-d);letter-spacing:.01em;color:var(--fiber)}
+.pillar span{display:block;font:500 11px/1.6 var(--f-m);letter-spacing:.04em;color:var(--dim);margin-top:2px}
+.hero-stage{position:relative;min-height:clamp(380px,52vh,560px)}
+#coreAnchor{position:absolute;inset:0}
+.stage-frame{position:absolute;inset:0;pointer-events:none}
+.stage-frame i{position:absolute;width:18px;height:18px;border-color:rgba(0,210,255,.5);border-style:solid;border-width:0}
+.stage-frame .c1{top:0;left:0;border-top-width:1.5px;border-left-width:1.5px;border-top-left-radius:6px}
+.stage-frame .c2{top:0;right:0;border-top-width:1.5px;border-right-width:1.5px;border-top-right-radius:6px}
+.stage-frame .c3{bottom:0;left:0;border-bottom-width:1.5px;border-left-width:1.5px;border-bottom-left-radius:6px}
+.stage-frame .c4{bottom:0;right:0;border-bottom-width:1.5px;border-right-width:1.5px;border-bottom-right-radius:6px}
+.phase-chip{position:absolute;top:14px;left:14px;z-index:3;display:flex;align-items:center;gap:9px;padding:9px 13px;border-radius:10px;background:rgba(2,5,10,.7);border:1px solid var(--line);font:600 10px/1.6 var(--f-m);letter-spacing:.14em;color:var(--muted);transition:border-color .4s,color .4s;pointer-events:none;max-width:calc(100% - 28px)}
+.phase-chip .dot{width:7px;height:7px;border-radius:50%;background:var(--ice);box-shadow:0 0 10px var(--ice);animation:pulse 1.6s ease-in-out infinite;flex:none}
+.phase-chip[data-state="resolving"] .dot{background:var(--cobalt);box-shadow:0 0 10px var(--cobalt);animation-duration:.5s}
+.phase-chip[data-state="resolved"]{border-color:rgba(255,184,0,.5);color:var(--gold)}
+.phase-chip[data-state="resolved"] .dot{background:var(--gold);box-shadow:0 0 12px var(--gold);animation:none}
+.phase-chip[data-state="paused"] .dot{background:var(--dim);box-shadow:none;animation:none}
+.stage-hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);z-index:3;font:500 9.5px/1.7 var(--f-m);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);white-space:nowrap;pointer-events:none}
+.resolved-flag{position:absolute;left:50%;bottom:17%;transform:translate(-50%,10px);opacity:0;z-index:4;display:flex;align-items:center;gap:14px;pointer-events:none;transition:opacity .45s,transform .55s var(--ease)}
+.resolved-flag.show{opacity:1;transform:translate(-50%,0)}
+.resolved-flag .rf-line{width:clamp(24px,6vw,64px);height:1px;background:linear-gradient(90deg,transparent,var(--gold));box-shadow:0 0 8px rgba(255,184,0,.6)}
+.resolved-flag .rf-line:last-child{background:linear-gradient(90deg,var(--gold),transparent)}
+.resolved-flag .rf-txt{font:700 12px/1 var(--f-m);letter-spacing:.4em;color:var(--gold);text-shadow:0 0 16px rgba(255,184,0,.8);white-space:nowrap;padding-left:.4em}
+#heroStage{cursor:pointer;-webkit-tap-highlight-color:transparent;border-radius:20px}
+#heroStage:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+
+/* lock log */
+.locklog{display:flex;align-items:center;height:44px;margin-top:clamp(22px,3.5vh,38px);border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(2,5,10,.6);border-radius:12px;overflow:hidden}
+.l-label{flex:none;height:100%;display:flex;align-items:center;gap:9px;padding:0 16px;border-right:1px solid var(--line);font:700 9px/1.6 var(--f-m);letter-spacing:.18em;text-transform:uppercase;color:var(--gold);background:linear-gradient(90deg,rgba(255,184,0,.08),transparent)}
+.l-label .live-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 9px var(--gold);animation:pulse 1.7s infinite;flex:none}
+.l-label .short{display:none}
+.l-view{flex:1;overflow:hidden;height:100%;display:flex;align-items:center;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+.l-track{display:flex;width:max-content;animation:logmove 48s linear infinite}
+.locklog:hover .l-track{animation-play-state:paused}
+@keyframes logmove{to{transform:translateX(-50%)}}
+.l-group{display:flex;align-items:center;gap:26px;padding-right:26px}
+.li{display:inline-flex;align-items:center;gap:9px;font:500 10.5px/1 var(--f-m);white-space:nowrap}
+.li .lt{color:var(--dim)}
+.li .ll{color:var(--ice);border:1px solid rgba(0,210,255,.3);border-radius:5px;padding:3px 6px;font-size:9px;letter-spacing:.08em}
+.li .ld{color:var(--muted)}
+.li .lok{color:var(--gold)}
+.l-sep{color:var(--cobalt);font-size:7px}
+
+/* konzole řízení pole */
+.console{margin-top:14px;padding:15px 18px 16px;border-radius:18px;background:rgba(3,6,11,.85);border:1px solid var(--line);position:relative;z-index:3}
+@media (hover:hover) and (min-width:900px){.console{background:rgba(3,6,11,.66);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}}
+.console-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.c-label{font:600 9.5px/1.7 var(--f-m);letter-spacing:.24em;text-transform:uppercase;color:var(--dim)}
+.c-right{display:flex;align-items:center;gap:10px}
+.c-fps{font:600 10px/1 var(--f-m);letter-spacing:.1em;color:var(--ice);min-width:54px;text-align:right}
+.c-reset{width:27px;height:27px;border-radius:8px;border:1px solid var(--line);background:rgba(2,5,10,.6);color:var(--dim);cursor:pointer;display:grid;place-items:center;transition:.25s}
+.c-reset:hover{color:var(--gold);border-color:rgba(255,184,0,.4)}
+.c-reset svg{width:13px;height:13px}
+.console-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.ctl-row{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.ctl-row label{font:600 9px/1.6 var(--f-m);letter-spacing:.13em;text-transform:uppercase;color:var(--dim)}
+.ctl-row output{font:600 10px/1 var(--f-m);color:var(--ice)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:26px;background:transparent;cursor:pointer;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--ice),var(--cobalt))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFE9B0,var(--gold) 62%,#B37400);border:1px solid rgba(255,220,130,.85);margin-top:-5.5px;box-shadow:0 0 10px rgba(255,184,0,.6)}
+input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--ice),var(--cobalt))}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFE9B0,var(--gold) 62%,#B37400);border:1px solid rgba(255,220,130,.85);box-shadow:0 0 10px rgba(255,184,0,.6)}
+.console-actions{display:flex;align-items:center;gap:12px;margin-top:10px;flex-wrap:wrap}
+.c-pause{width:38px;height:38px;flex:none;border-radius:10px;border:1px solid var(--line);background:rgba(2,5,10,.6);color:var(--ice);cursor:pointer;display:grid;place-items:center;transition:.25s}
+.c-pause:hover{border-color:var(--line2);box-shadow:0 0 12px rgba(0,210,255,.15)}
+.c-pause svg{width:14px;height:14px}
+.switch{display:inline-flex;align-items:center;gap:8px;cursor:pointer;position:relative}
+.switch input{position:absolute;opacity:0;width:100%;height:100%;cursor:pointer}
+.switch i{width:34px;height:20px;border-radius:20px;background:rgba(15,26,44,.9);border:1px solid var(--line);position:relative;transition:.25s;flex:none;pointer-events:none}
+.switch i::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--dim);transition:.25s}
+.switch input:checked + i{background:rgba(0,210,255,.18);border-color:rgba(0,210,255,.5)}
+.switch input:checked + i::after{left:16px;background:var(--ice);box-shadow:0 0 8px rgba(0,210,255,.7)}
+.switch input:focus-visible + i{outline:2px solid var(--gold);outline-offset:2px}
+.switch span{font:600 9.5px/1.6 var(--f-m);letter-spacing:.13em;text-transform:uppercase;color:var(--dim)}
+.c-lock{flex:1;min-width:160px;min-height:40px}
+.c-lock:disabled{opacity:.78;cursor:default;transform:none}
+
+/* ================= PARADIGMA ================= */
+.para{display:grid;grid-template-columns:.92fr 1.08fr;gap:clamp(32px,5vw,72px);align-items:start}
+.para-left{position:sticky;top:112px}
+.para-quote{margin:26px 0 24px;padding:18px 20px;border-left:2px solid var(--gold);border-radius:0 14px 14px 0;background:linear-gradient(90deg,rgba(255,184,0,.07),transparent 80%);color:var(--fiber);font:600 16.5px/1.7 var(--f-d)}
+.p-badges{display:grid;grid-template-columns:1fr 40px 1fr;gap:12px;margin-bottom:12px}
+.p-badge{font:700 9px/1.7 var(--f-m);letter-spacing:.2em;text-transform:uppercase;padding:8px 12px;border-radius:9px;text-align:center}
+.p-badge.old{color:var(--dim);border:1px dashed rgba(150,170,200,.25)}
+.p-badge.new{color:var(--gold);border:1px solid rgba(255,184,0,.4);background:rgba(255,184,0,.06);box-shadow:0 0 18px rgba(255,184,0,.08)}
+.p-rows{display:flex;flex-direction:column;gap:14px}
+.prow{display:grid;grid-template-columns:1fr 40px 1fr;gap:12px;align-items:stretch}
+.p-half{padding:18px;border-radius:16px;display:flex;gap:13px;align-items:flex-start;transition:border-color .3s,box-shadow .3s}
+.p-half h4{font:700 15.5px/1.45 var(--f-d);margin-bottom:5px;letter-spacing:-.01em}
+.p-half p{font-size:13px;line-height:1.65}
+.p-old{background:rgba(6,10,18,.6);border:1px dashed rgba(150,170,200,.18)}
+.p-old h4{color:#B9C6D8}
+.p-old p{color:var(--dim)}
+.p-new{background:linear-gradient(150deg,rgba(0,68,255,.16),rgba(3,6,12,.66));border:1px solid rgba(0,210,255,.22)}
+.p-new h4{color:var(--fiber)}
+.p-new p{color:var(--muted)}
+.prow:hover .p-new{border-color:rgba(255,184,0,.42);box-shadow:0 0 28px rgba(255,184,0,.09)}
+.p-ico{width:27px;height:27px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;margin-top:1px}
+.p-old .p-ico{background:rgba(150,170,200,.08);color:var(--dim);border:1px solid rgba(150,170,200,.25)}
+.p-new .p-ico{background:rgba(255,184,0,.15);color:var(--gold);border:1px solid rgba(255,184,0,.45);box-shadow:0 0 12px rgba(255,184,0,.25)}
+.p-arrow{display:grid;place-items:center;color:var(--ice);transition:transform .3s var(--ease)}
+.p-arrow svg{width:20px;height:20px;filter:drop-shadow(0 0 6px rgba(0,210,255,.5))}
+.prow:hover .p-arrow{transform:translateX(4px)}
+
+/* ================= SCHOPNOSTI ================= */
+.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:18px;margin-top:clamp(30px,4vh,48px);perspective:1100px}
+.card{position:relative;display:flex;flex-direction:column;gap:11px;padding:26px;border-radius:20px;border:1px solid var(--line);overflow:hidden;min-width:0;
+  background:linear-gradient(165deg,rgba(0,68,255,.12),rgba(3,6,12,.8) 55%);
+  transform:translateY(var(--lift,0px)) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
+  transition:transform .35s cubic-bezier(.2,.8,.3,1),border-color .3s,box-shadow .3s}
+.js .card.rv{opacity:0;transform:translateY(calc(var(--lift,0px) + 26px)) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:opacity .9s var(--ease) var(--d,0s),transform .35s cubic-bezier(.2,.8,.3,1),border-color .3s,box-shadow .3s}
+.js .card.rv.in{opacity:1;transform:translateY(var(--lift,0px)) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}
+.card::before{content:"";position:absolute;inset:0;background:radial-gradient(230px circle at var(--mx,50%) var(--my,50%),rgba(0,210,255,.14),transparent 65%);opacity:0;transition:opacity .3s;pointer-events:none}
+.card::after{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,210,255,.55),transparent);pointer-events:none}
+.card:hover,.card:focus-within,.card:active{--lift:-4px;--spd:.55;border-color:rgba(0,210,255,.42);box-shadow:0 18px 44px rgba(0,8,34,.6),0 0 34px rgba(0,68,255,.15)}
+.card:hover::before,.card:focus-within::before{opacity:1}
+.card-a{grid-column:span 4;min-height:280px}
+.card-b{grid-column:span 2}
+.card-c,.card-d,.card-e{grid-column:span 2;min-height:256px}
+.card-e{background:linear-gradient(165deg,rgba(255,184,0,.09),rgba(3,6,12,.82) 55%);border-color:rgba(255,184,0,.22)}
+.card-e::before{background:radial-gradient(230px circle at var(--mx,50%) var(--my,50%),rgba(255,184,0,.12),transparent 65%)}
+.card-e::after{background:linear-gradient(90deg,transparent,rgba(255,184,0,.55),transparent)}
+.card-e:hover,.card-e:focus-within{border-color:rgba(255,184,0,.45);box-shadow:0 18px 44px rgba(26,13,0,.55),0 0 34px rgba(255,184,0,.1)}
+.c-tag{font:700 9px/1.8 var(--f-m);letter-spacing:.24em;text-transform:uppercase;color:var(--ice)}
+.card-e .c-tag,.card-d .c-tag{color:var(--gold)}
+.card h3{font:800 21px/1.3 var(--f-d);letter-spacing:-.015em}
+.card-a h3{font-size:24px}
+.card .c-desc{color:var(--muted);font-size:14px;line-height:1.7}
+.c-cap{font:500 9px/1.8 var(--f-m);letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-top:8px}
+.micro{margin-top:auto;padding-top:14px}
+.wave{position:relative;display:flex;align-items:flex-end;gap:3px;height:92px;padding:0 2px}
+.wave::before{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:rgba(0,210,255,.22)}
+.wave i{flex:1;height:var(--h,50%);min-width:1.5px;border-radius:2px 2px 0 0;background:linear-gradient(180deg,var(--fiber),var(--ice) 40%,var(--cobalt));box-shadow:0 0 6px rgba(0,210,255,.35);transform-origin:bottom;animation:wv calc(1.5s*var(--spd,1)) ease-in-out calc(var(--i)*-.13s) infinite alternate;opacity:.92}
+.wave i:nth-child(7n){background:linear-gradient(180deg,#FFE9B0,var(--gold) 45%,#C77F00);box-shadow:0 0 6px rgba(255,184,0,.4)}
+@keyframes wv{from{transform:scaleY(.26)}to{transform:scaleY(1)}}
+.wave::after{content:"";position:absolute;top:-6px;bottom:-2px;width:2px;left:0;background:linear-gradient(180deg,transparent,var(--gold),transparent);box-shadow:0 0 12px rgba(255,184,0,.65);animation:scan calc(3.4s*var(--spd,1)) linear infinite}
+@keyframes scan{from{left:0}to{left:100%}}
+.ctx-svg,.hand-svg{width:100%;height:86px;display:block}
+.ctx-layer{animation:floaty calc(4s*var(--spd,1)) ease-in-out infinite alternate}
+.ctx-layer.l2{animation-delay:-1.3s}.ctx-layer.l3{animation-delay:-2.6s}
+@keyframes floaty{from{transform:translateY(0)}to{transform:translateY(-2.5px)}}
+.flow{stroke-dasharray:5 7;animation:dash calc(1.5s*var(--spd,1)) linear infinite}
+@keyframes dash{to{stroke-dashoffset:-24}}
+.node-pulse{animation:nodep calc(2.8s*var(--spd,1)) ease-in-out infinite}
+@keyframes nodep{0%,100%{opacity:.55}50%{opacity:1}}
+.lang-orb{position:relative;height:100px}
+.lang-orb svg{width:100%;height:100px;display:block}
+.orbit-arc{transform-origin:110px 46px;transform-box:view-box;animation:spin calc(9s*var(--spd,1)) linear infinite}
+.lnode circle{animation:lcyc 10s infinite;animation-delay:calc(var(--i)*2s)}
+.lnode text{font:700 9px var(--f-m);letter-spacing:.08em;animation:ltxt 10s infinite;animation-delay:calc(var(--i)*2s)}
+@keyframes lcyc{0%,17%{fill:#00D2FF;stroke:#7FE4FF;filter:drop-shadow(0 0 6px rgba(0,210,255,.9))}21%,100%{fill:#0A1830;stroke:rgba(0,210,255,.35);filter:none}}
+@keyframes ltxt{0%,17%{fill:#F2F8FF}21%,100%{fill:#5F7392}}
+.greet{position:absolute;left:50%;top:46px;transform:translate(-50%,-50%);width:120px;height:24px;text-align:center;font:700 14px/24px var(--f-d);color:var(--fiber)}
+.greet span{position:absolute;inset:0;opacity:0;animation:gw 10s infinite;animation-delay:calc(var(--i)*2s);white-space:nowrap}
+@keyframes gw{0%{opacity:0;transform:translateY(7px)}3%,17%{opacity:1;transform:none}21%,100%{opacity:0;transform:translateY(-7px)}}
+.hum-glow{animation:humg calc(2.8s*var(--spd,1)) ease-in-out infinite}
+@keyframes humg{0%,72%,100%{opacity:.75}86%{opacity:1}}
+.vault{position:relative;width:92px;height:92px;margin:6px auto 0}
+.vault .v-ring1{position:absolute;inset:0;border:1.5px dashed rgba(0,210,255,.42);border-radius:50%;animation:spin calc(26s*var(--spd,1)) linear infinite}
+.vault .v-ring2{position:absolute;inset:12px;border:1px solid rgba(255,184,0,.38);border-radius:50%;animation:spin calc(18s*var(--spd,1)) linear infinite reverse}
+.vault .v-orb1{position:absolute;inset:0;animation:spin calc(9s*var(--spd,1)) linear infinite}
+.vault .v-orb1 i{position:absolute;top:-3.5px;left:50%;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--ice);box-shadow:0 0 10px var(--ice)}
+.vault .v-orb2{position:absolute;inset:12px;animation:spin calc(13s*var(--spd,1)) linear infinite reverse}
+.vault .v-orb2 i{position:absolute;top:-3px;left:50%;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold)}
+.vault .v-lock{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:24px;height:24px;color:var(--gold);filter:drop-shadow(0 0 8px rgba(255,184,0,.6))}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ================= SIMULÁTOR ================= */
+.sim-shell{margin-top:clamp(28px,4vh,44px);padding:clamp(20px,3vw,36px);border-radius:24px;border:1px solid var(--line);background:linear-gradient(170deg,rgba(0,68,255,.08),rgba(2,4,9,.84) 50%);transition:border-color .6s,box-shadow .6s}
+.sim-shell.after{border-color:rgba(255,184,0,.36);box-shadow:0 0 60px rgba(255,184,0,.07),inset 0 0 90px rgba(255,184,0,.03)}
+.sim-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.seg{position:relative;display:grid;grid-template-columns:1fr 1fr;background:rgba(2,5,10,.78);border:1px solid var(--line);border-radius:14px;padding:4px;min-width:min(430px,100%)}
+.seg::before{content:"";position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:10px;background:linear-gradient(135deg,rgba(0,68,255,.42),rgba(0,210,255,.18));border:1px solid rgba(0,210,255,.4);transition:transform .45s cubic-bezier(.22,1,.36,1),background .45s,border-color .45s}
+.seg[data-on="after"]::before{transform:translateX(100%);background:linear-gradient(135deg,rgba(255,184,0,.42),rgba(255,216,115,.18));border-color:rgba(255,184,0,.4)}
+.seg button{position:relative;z-index:2;border:0;background:none;color:var(--dim);font:700 11px/1.6 var(--f-m);letter-spacing:.14em;text-transform:uppercase;padding:10px 8px;cursor:pointer;transition:color .3s}
+.seg button[aria-pressed="true"]{color:var(--fiber)}
+.seg[data-on="before"] button:first-child{color:var(--ice)}
+.seg[data-on="after"] button:last-child{color:var(--gold)}
+.sim-status{margin-top:14px;font:600 13px/1.6 var(--f-m);letter-spacing:.06em;color:var(--muted);min-height:22px}
+.sim-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+.metric{text-align:center;padding:16px 10px;border-radius:14px;background:rgba(2,5,10,.5);border:1px solid rgba(0,210,255,.08)}
+.metric .mv{font:800 clamp(22px,3vw,32px)/1 var(--f-d);color:var(--fiber);letter-spacing:-.02em;display:block}
+.metric .mu{font:600 10px/1.6 var(--f-m);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);display:block;margin-top:4px}
+.metric .md{font:700 11px/1.6 var(--f-m);letter-spacing:.1em;color:var(--gold);display:block;margin-top:6px;opacity:0;transform:translateY(4px);transition:opacity .4s,transform .4s}
+.metric .md.show{opacity:1;transform:none}
+.sim-chart{margin-top:24px}
+.chart-title{font:600 10px/1.6 var(--f-m);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:14px;text-align:center}
+.chart{display:flex;align-items:flex-end;justify-content:space-around;height:140px;padding:0 10px;border-bottom:1px solid rgba(0,210,255,.15);position:relative}
+.col{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;max-width:60px}
+.bar-wrap{position:relative;width:100%;height:100%;display:flex;flex-direction:column;justify-content:flex-end}
+.bar{width:100%;height:var(--bh,50%);background:rgba(0,68,255,.15);border-radius:4px 4px 0 0;position:relative;overflow:hidden;transition:height .6s var(--ease)}
+.fill{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(180deg,var(--ice),var(--cobalt));border-radius:4px 4px 0 0;transition:height .6s var(--ease),background .6s}
+.sim-shell.after .fill{background:linear-gradient(180deg,var(--gold),#E08900)}
+.bar-val{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font:700 11px/1 var(--f-m);color:var(--ice);white-space:nowrap;opacity:0;transition:opacity .3s}
+.sim-shell.after .bar-val{color:var(--gold)}
+.col:hover .bar-val{opacity:1}
+.day{font:600 9px/1.6 var(--f-m);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.sim-note{margin-top:18px;font:500 11px/1.7 var(--f-m);letter-spacing:.04em;color:var(--dim);text-align:center}
+
+/* ================= AKCE / FORMULÁŘ ================= */
+.acc-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,60px);align-items:start}
+.slots{display:flex;align-items:baseline;gap:14px;margin-bottom:20px}
+.slot-num{font:800 clamp(48px,8vw,72px)/1 var(--f-d);color:var(--gold);text-shadow:0 0 30px rgba(255,184,0,.3)}
+.slot-lbl{font:600 11px/1.6 var(--f-m);letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.k-list{list-style:none;display:flex;flex-direction:column;gap:14px;margin-bottom:24px}
+.k-item{display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.6;color:var(--muted)}
+.k-item::before{content:"✓";color:var(--gold);font-weight:700;flex:none}
+.nda{padding:14px 18px;border-radius:12px;background:rgba(255,184,0,.06);border:1px solid rgba(255,184,0,.2);font:600 12px/1.6 var(--f-m);letter-spacing:.04em;color:var(--gold-soft)}
+.form-card{padding:clamp(24px,4vw,36px);border-radius:20px;background:rgba(3,6,11,.8);border:1px solid var(--line);position:relative;overflow:hidden}
+.form-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--ice),var(--gold));opacity:.6}
+.f-title{font:800 20px/1.3 var(--f-d);margin-bottom:20px;color:var(--fiber)}
+.field{margin-bottom:16px}
+.field label{display:block;font:600 10px/1.6 var(--f-m);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.field input,.field textarea{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:rgba(2,5,10,.6);color:var(--fiber);font:400 14px/1.6 var(--f-b);transition:border-color .25s,box-shadow .25s}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--ice);box-shadow:0 0 0 3px rgba(0,210,255,.1)}
+.field.bad input,.field.bad textarea{border-color:#FF4D4D;box-shadow:0 0 0 3px rgba(255,77,77,.1)}
+.field .err{font:600 10px/1.4 var(--f-m);color:#FF6B6B;margin-top:4px;display:none}
+.field.bad .err{display:block}
+textarea{resize:vertical;min-height:80px}
+.f-submit{width:100%;margin-top:8px}
+.f-submit.loading{pointer-events:none;opacity:.7}
+.f-submit .spinner{width:14px;height:14px;border:2px solid rgba(26,18,0,.3);border-top-color:#1A1200;border-radius:50%;animation:spin .8s linear infinite;display:none}
+.f-submit.loading .spinner{display:block}
+.f-submit.loading .arrow{display:none}
+.ok-panel{display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;gap:16px}
+.ok-panel.show{display:flex;animation:fadeUp .5s var(--ease)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.ok-icon{width:48px;height:48px;border-radius:50%;background:rgba(255,184,0,.15);border:1px solid rgba(255,184,0,.4);display:grid;place-items:center;color:var(--gold);font-size:24px}
+.ok-title{font:800 22px/1.3 var(--f-d);color:var(--fiber)}
+.ok-body{font-size:14px;color:var(--muted);max-width:40ch}
+.ok-agian{margin-top:10px}
+
+/* ================= FOOTER ================= */
+footer{padding:40px 0;border-top:1px solid rgba(0,210,255,.1);background:rgba(1,2,5,.9);position:relative;z-index:1}
+.foot-in{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.foot-brand{display:flex;align-items:center;gap:10px}
+.foot-brand svg{width:24px;height:24px}
+.foot-txt{font:500 12px/1.6 var(--f-m);letter-spacing:.06em;color:var(--dim)}
+.foot-links{display:flex;gap:20px}
+.foot-links a{font:600 11px/1 var(--f-m);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+.foot-links a:hover{color:var(--ice)}
+
+/* ================= AUDIO PLAYER STYLES ================= */
+.audio-player {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 50px;
+  background: rgba(3, 5, 8, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 210, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  transition: all 0.3s ease;
+}
+.audio-player:hover {
+  border-color: rgba(0, 210, 255, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 68, 255, 0.15);
+}
+.ap-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 210, 255, 0.1);
+  color: var(--ice);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: all 0.2s;
+}
+.ap-btn:hover {
+  background: rgba(0, 210, 255, 0.2);
+  transform: scale(1.05);
+}
+.ap-btn.playing {
+  background: rgba(255, 184, 0, 0.15);
+  color: var(--gold);
+}
+.ap-slider-container {
+  width: 80px;
+  display: flex;
+  align-items: center;
+}
+.ap-volume {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+.ap-volume::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--ice);
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(0, 210, 255, 0.6);
+}
+.ap-volume::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--ice);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 8px rgba(0, 210, 255, 0.6);
+}
+.ap-label {
+  font: 600 9px/1 var(--f-m);
+  letter-spacing: 0.1em;
+  color: var(--dim);
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:1080px){
+  .hero-grid{grid-template-columns:1fr;gap:40px}
+  .hero-stage{min-height:400px;order:-1}
+  .para{grid-template-columns:1fr}
+  .para-left{position:static}
+  .acc-grid{grid-template-columns:1fr}
+  .bento{grid-template-columns:repeat(2,1fr)}
+  .card-a,.card-b,.card-c,.card-d,.card-e{grid-column:span 1}
+  .sim-metrics{grid-template-columns:1fr}
+  .audio-player { bottom: 16px; right: 16px; }
+}
+@media(max-width:760px){
+  .nav-links{display:none}
+  .burger{display:block}
+  .pillars{grid-template-columns:1fr}
+  .console-grid{grid-template-columns:repeat(3,1fr)}
+  .seg{grid-template-columns:1fr}
+  .seg::before{display:none}
+  .seg button{padding:12px;text-align:center;border-bottom:1px solid var(--line)}
+  .seg button:last-child{border-bottom:none}
+  .chart{height:100px}
+  .col{max-width:40px}
+  .audio-player { 
+    bottom: 12px; 
+    right: 12px; 
+    left: 12px; 
+    justify-content: space-between;
+    width: auto;
+  }
+  .ap-slider-container { flex: 1; max-width: 100px; }
+}
+</style>
+</head>
+<body class="js">
+<a href="#main" class="skip">Skip to content</a>
+<div class="aurora"><i></i><i></i></div>
+<canvas id="field"></canvas>
+<div class="grain"></div>
+
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a href="#" class="brand">
+      <svg viewBox="0 0 64 64" fill="none"><rect x="3" y="3" width="58" height="58" rx="15" stroke="currentColor" stroke-width="2"/><path d="M22 15 V35 Q22 46 33 46 H38" stroke="currentColor" stroke-width="6" stroke-linecap="round"/><circle cx="46" cy="20" r="5" fill="currentColor"/><path d="M46 32 V42" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>
+      <span class="brand-name">Li<span class="slash">/</span>Bot</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#paradigma" data-sec="paradigma">Paradigm</a>
+      <a href="#schopnosti" data-sec="schopnosti">Capabilities</a>
+      <a href="#dopad" data-sec="dopad">Impact</a>
+      <a href="#kapacita" data-sec="kapacita">Access</a>
+    </nav>
+    <div class="nav-tools">
+      <div class="lang">
+        <button class="lang-btn" data-lang="cs" aria-pressed="true">CS</button>
+        <button class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <!-- Original sound toggle kept for compatibility, but now controlled by Audio Player -->
+      <button class="snd" id="sndBtn" title="Toggle Sound">
+        <svg id="sndOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+        <svg id="sndOff" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+        <span class="snd-lbl" id="sndLbl">ON</span>
+      </button>
+      <a href="#kapacita" class="btn btn-gold btn-sm nav-cta">Request Access</a>
+      <button class="burger" id="burger" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span></button>
+    </div>
+    <div class="progress" id="progBar"></div>
+  </div>
+</header>
+
+<main id="main">
+<section id="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-copy" id="heroCopy">
+        <span class="eyebrow"><span class="live-dot"></span> Proprietary Layer · Private Preview</span>
+        <h1 id="h1" aria-label="Every call resolved standing by">
+          <span class="h1-line" data-i18n="hero.h1a">Každý hovor,</span>
+          <span class="h1-line h1-gold" data-i18n="hero.h1b">který je už</span>
+          <span class="h1-line" data-i18n="hero.h1c">vyřešený.</span>
+        </h1>
+        <p class="hero-sub" data-i18n="hero.sub">Nečekáme na problém. Skládáme komunikaci do stavu, kdy problém nemá šanci vzniknout. Mechanismus zůstává uvnitř — vidíte jen výsledek.</p>
+        <div class="hero-ctas">
+          <a href="#dopad" class="btn btn-gold btn-sheen">See Impact <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          <a href="#kapacita" class="btn btn-ghost">Request Access</a>
+        </div>
+        <div class="pillars">
+          <div class="pillar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            <div><b>Voice Core</b><span>Natural speech</span></div>
+          </div>
+          <div class="pillar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <div><b>Multilingual</b><span>CS·EN·DE·PL·SK</span></div>
+          </div>
+          <div class="pillar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <div><b>Closed Ecosystem</b><span>No leakage</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-stage" id="heroStage" tabindex="0" role="button" aria-label="Activate Singularity Field">
+        <div class="stage-frame"><i class="c1"></i><i class="c2"></i><i class="c3"></i><i class="c4"></i></div>
+        <div class="phase-chip" id="phaseChip" data-state="live"><span class="dot"></span><span id="phaseText">Singularity — Active</span></div>
+        <div id="coreAnchor"></div>
+        <div class="resolved-flag" id="resolvedFlag"><span class="rf-line"></span><span class="rf-txt">RESOLVED</span><span class="rf-line"></span></div>
+        <div class="stage-hint">Click anywhere to fold the field</div>
+        
+        <!-- Lock Log -->
+        <div class="locklog">
+          <div class="l-label"><span class="live-dot"></span><span class="full" data-i18n="log.label">Lock log · illustrative</span><span class="short" data-i18n="log.labelShort">Log</span></div>
+          <div class="l-view"><div class="l-track" id="logTrack"></div></div>
+        </div>
+
+        <!-- Console -->
+        <div class="console">
+          <div class="console-top">
+            <span class="c-label" data-i18n="console.label">Field direction · live preview</span>
+            <div class="c-right">
+              <span class="c-fps mono" id="cFps">60 FPS</span>
+              <button class="c-reset" id="btnReset" title="Reset defaults"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
+            </div>
+          </div>
+          <div class="console-grid">
+            <div class="ctl-row"><label data-i18n="console.int">Intensity</label><output id="vInt">×1.00</output><input type="range" id="rInt" min="0.2" max="2" step="0.05" value="1"></div>
+            <div class="ctl-row"><label data-i18n="console.tempo">Tempo</label><output id="vTempo">×1.00</output><input type="range" id="rTempo" min="0.2" max="2" step="0.05" value="1"></div>
+            <div class="ctl-row"><label data-i18n="console.glow">Glow</label><output id="vGlow">×1.00</output><input type="range" id="rGlow" min="0.2" max="2" step="0.05" value="1"></div>
+            <div class="ctl-row"><label data-i18n="console.dens">Density</label><output id="vDens">×1.00</output><input type="range" id="rDens" min="0.2" max="2" step="0.05" value="1"></div>
+            <div class="ctl-row"><label data-i18n="console.grav">Gravity</label><output id="vGrav">×1.00</output><input type="range" id="rGrav" min="0.2" max="2" step="0.05" value="1"></div>
+            <div class="ctl-row"><label data-i18n="console.depth">Depth</label><output id="vDepth">×1.00</output><input type="range" id="rDepth" min="0.2" max="2" step="0.05" value="1"></div>
+          </div>
+          <div class="console-actions">
+            <button class="c-pause" id="btnPause" aria-pressed="false"><svg id="icoPause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg><svg id="icoPlay" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></button>
+            <label class="switch"><input type="checkbox" id="autoChk" checked><i></i><span data-i18n="console.auto">Auto-cycle</span></label>
+            <button class="btn btn-gold c-lock" id="btnLock"><span id="lockLbl" data-i18n="console.lock">Lock the field</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="paradigma" class="sec">
+  <div class="wrap para">
+    <div class="para-left rv">
+      <span class="eyebrow gold" data-i18n="par.eyebrow">01 / Paradigm shift</span>
+      <h2 class="sec-title" data-i18n="par.title">Order that arrives before the problem.</h2>
+      <p class="sec-lede" data-i18n="par.lede">The old world waits for communication to shatter — then glues it back. The new standard folds it into a resolved state before it can become a problem.</p>
+      <blockquote class="para-quote" data-i18n="par.quote">“We don’t explain how. We show that.”</blockquote>
+      <a href="#dopad" class="btn btn-ghost btn-sm mt-4" data-i18n="par.cta">See the impact in numbers</a>
+    </div>
+    <div class="para-right">
+      <div class="p-badges rv">
+        <div class="p-badge old" data-i18n="par.oldBadge">The old world</div>
+        <div></div>
+        <div class="p-badge new" data-i18n="par.newBadge">The LiBot / Li standard</div>
+      </div>
+      <div class="p-rows">
+        <div class="prow rv" style="--d:.1s">
+          <div class="p-half p-old"><div class="p-ico">×</div><div><h4 data-i18n="p.r1.old">Missed requests</h4><p data-i18n="p.r1.oldD">Nobody picked up at peak time. The customer tries a competitor.</p></div></div>
+          <div class="p-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="p-half p-new"><div class="p-ico">✓</div><div><h4 data-i18n="p.r1.new">Captured request</h4><p data-i18n="p.r1.newD">Every signal is received, confirmed and driven to resolution.</p></div></div>
+        </div>
+        <div class="prow rv" style="--d:.2s">
+          <div class="p-half p-old"><div class="p-ico">×</div><div><h4 data-i18n="p.r2.old">Lost context</h4><p data-i18n="p.r2.oldD">Information lives in heads, e-mails and sticky notes.</p></div></div>
+          <div class="p-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="p-half p-new"><div class="p-ico">✓</div><div><h4 data-i18n="p.r2.new">Carried context</h4><p data-i18n="p.r2.newD">History and intent travel with the request all the way to a human.</p></div></div>
+        </div>
+        <div class="prow rv" style="--d:.3s">
+          <div class="p-half p-old"><div class="p-ico">×</div><div><h4 data-i18n="p.r3.old">Language barriers</h4><p data-i18n="p.r3.oldD">The customer writes in German, the team replies in Czech — late.</p></div></div>
+          <div class="p-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="p-half p-new"><div class="p-ico">✓</div><div><h4 data-i18n="p.r3.new">Languages without friction</h4><p data-i18n="p.r3.newD">CS, EN, DE, PL, SK. No switching, no lost nuance.</p></div></div>
+        </div>
+        <div class="prow rv" style="--d:.4s">
+          <div class="p-half p-old"><div class="p-ico">×</div><div><h4 data-i18n="p.r4.old">Tools needing manual care</h4><p data-i18n="p.r4.oldD">Spreadsheets, reminders, midnight queue checks.</p></div></div>
+          <div class="p-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="p-half p-new"><div class="p-ico">✓</div><div><h4 data-i18n="p.r4.new">A layer in the background</h4><p data-i18n="p.r4.newD">Runs quietly beneath operations. Only the outcome surfaces.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="schopnosti" class="sec">
+  <div class="wrap">
+    <span class="eyebrow" data-i18n="cap2.eyebrow">02 / Capabilities</span>
+    <h2 class="sec-title" data-i18n="pil.title">Five pillars. One immaterial layer.</h2>
+    <p class="sec-lede" data-i18n="pil.lede">An architecture you don’t need to understand in order to trust it. You see the outcome; the mechanism stays inside.</p>
+    
+    <div class="bento" id="bento">
+      <article class="card card-a rv">
+        <span class="c-tag" data-i18n="c.a.tag">Natural voice</span>
+        <h3 data-i18n="c.a.title">Voice core</h3>
+        <p class="c-desc" data-i18n="c.a.desc">Speaks like a person with time: calm, factual, at the customer’s pace. Understands interruptions, silence and what is said between the lines.</p>
+        <div class="micro">
+          <div class="wave" data-n="32"></div>
+          <span class="c-cap" data-i18n="c.a.cap">Standing wave — live preview</span>
+        </div>
+      </article>
+      <article class="card card-b rv" style="--d:.1s">
+        <span class="c-tag" data-i18n="c.b.tag">Living context</span>
+        <h3 data-i18n="c.b.title">Context layer</h3>
+        <p class="c-desc" data-i18n="c.b.desc">Every request carries its history. Nothing is asked twice, nothing is lost between handoffs.</p>
+        <div class="micro">
+          <svg class="ctx-svg" viewBox="0 0 200 80">
+            <g class="ctx-layer l1"><path d="M10 40 Q50 10 100 40 T190 40" stroke="rgba(0,210,255,.3)" stroke-width="2" fill="none"/></g>
+            <g class="ctx-layer l2"><path d="M10 40 Q50 70 100 40 T190 40" stroke="rgba(0,68,255,.4)" stroke-width="2" fill="none"/></g>
+            <g class="ctx-layer l3"><circle cx="100" cy="40" r="4" fill="#00D2FF"/><circle cx="40" cy="40" r="3" fill="#0044FF"/><circle cx="160" cy="40" r="3" fill="#0044FF"/></g>
+          </svg>
+          <span class="c-cap" data-i18n="c.b.cap">Context thread — preview</span>
+        </div>
+      </article>
+      <article class="card card-c rv" style="--d:.2s">
+        <span class="c-tag" data-i18n="c.c.tag">CS · EN · DE · PL · SK</span>
+        <h3 data-i18n="c.c.title">Multilingual layer</h3>
+        <p class="c-desc" data-i18n="c.c.desc">One conversation, five languages. The customer speaks their own — the outcome is the same.</p>
+        <div class="micro lang-orb">
+          <svg viewBox="0 0 220 100">
+            <defs><marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#00D2FF"/></marker></defs>
+            <path class="orbit-arc" d="M110,10 A40,40 0 1,1 109.9,10" stroke="rgba(0,210,255,.2)" stroke-width="1" fill="none"/>
+            <g class="lnode" style="--i:0"><circle cx="110" cy="10" r="5"/><text x="110" y="-5" text-anchor="middle">CS</text></g>
+            <g class="lnode" style="--i:1"><circle cx="150" cy="40" r="5"/><text x="165" y="45" text-anchor="start">EN</text></g>
+            <g class="lnode" style="--i:2"><circle cx="110" cy="70" r="5"/><text x="110" y="85" text-anchor="middle">DE</text></g>
+            <g class="lnode" style="--i:3"><circle cx="70" cy="40" r="5"/><text x="55" y="45" text-anchor="end">PL</text></g>
+            <g class="lnode" style="--i:4"><circle cx="90" cy="20" r="5"/><text x="80" y="15" text-anchor="end">SK</text></g>
+          </svg>
+          <div class="greet">
+            <span style="--i:0">Ahoj</span><span style="--i:1">Hello</span><span style="--i:2">Hallo</span><span style="--i:3">Cześć</span><span style="--i:4">Ahoj</span>
+          </div>
+          <span class="c-cap" data-i18n="c.c.cap">One conversation, five languages</span>
+        </div>
+      </article>
+      <article class="card card-d rv" style="--d:.3s">
+        <span class="c-tag" data-i18n="c.d.tag">Human handoff</span>
+        <h3 data-i18n="c.d.title">Human continuity</h3>
+        <p class="c-desc" data-i18n="c.d.desc">When a human steps in, they step in with everything: context, intent, recommended next step. Zero explaining from scratch.</p>
+        <div class="micro">
+          <svg class="hand-svg" viewBox="0 0 200 80">
+            <path class="flow" d="M20 40 H80" stroke="#00D2FF" stroke-width="2" fill="none" marker-end="url(#arrH)"/>
+            <defs><marker id="arrH" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#FFB800"/></marker></defs>
+            <circle cx="100" cy="40" r="12" fill="rgba(255,184,0,.1)" stroke="#FFB800" stroke-width="1.5" class="hum-glow"/>
+            <path d="M100 28 V52 M88 40 H112" stroke="#FFB800" stroke-width="2"/>
+            <path class="flow" d="M120 40 H180" stroke="#FFB800" stroke-width="2" fill="none" marker-end="url(#arrH)"/>
+            <circle cx="190" cy="40" r="4" fill="#F2F8FF"/>
+          </svg>
+          <span class="c-cap" data-i18n="c.d.cap">Lossless handoff — preview</span>
+        </div>
+      </article>
+      <article class="card card-e rv" style="--d:.4s">
+        <span class="c-tag" data-i18n="c.e.tag">Proprietary</span>
+        <h3 data-i18n="c.e.title">Closed ecosystem</h3>
+        <p class="c-desc" data-i18n="c.e.desc">What is inside stays inside. No mechanism disclosure, no extra dependencies. Turnkey outcomes.</p>
+        <div class="micro">
+          <div class="vault">
+            <div class="v-ring1"></div><div class="v-ring2"></div>
+            <div class="v-orb1"><i></i></div><div class="v-orb2"><i></i></div>
+            <svg class="v-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <span class="c-cap" data-i18n="c.e.cap">Sealed boundary — preview</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="dopad" class="sec">
+  <div class="wrap">
+    <span class="eyebrow" data-i18n="sim.eyebrow">03 / Impact simulator</span>
+    <h2 class="sec-title" data-i18n="sim.title">Before and after. A measurable difference.</h2>
+    <p class="sec-lede" data-i18n="sim.lede">Same operation, same demand — a different outcome. Switch the scenario and watch what changes.</p>
+    
+    <div class="sim-shell" id="simShell">
+      <div class="sim-head">
+        <span class="badge" style="font:700 9px/1.6 var(--f-m);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);border:1px solid var(--line);padding:6px 10px;border-radius:8px;" data-i18n="sim.badge">Private preview</span>
+        <div class="seg" id="seg" data-on="before">
+          <button id="segB" aria-pressed="true" data-i18n="sim.before">Before</button>
+          <button id="segA" aria-pressed="false" data-i18n="sim.after">After deployment · LiBot / Li</button>
+        </div>
+      </div>
+      <div class="sim-status" id="simStatus" data-i18n="sim.statusB">The queue grows. Context fragments. Teams firefight.</div>
+      
+      <div class="sim-metrics">
+        <div class="metric"><span class="mv" id="mv1">24</span><span class="mu" data-i18n="sim.m1">Unresolved requests</span><span class="mu" data-i18n="sim.m1u">/ week</span><span class="md" id="md1" data-i18n="sim.base">baseline</span></div>
+        <div class="metric"><span class="mv" id="mv2">4 h 12 m</span><span class="mu" data-i18n="sim.m2">Time to first response</span><span class="mu">&nbsp;</span><span class="md" id="md2" data-i18n="sim.base">baseline</span></div>
+        <div class="metric"><span class="mv" id="mv3">31</span><span class="mu" data-i18n="sim.m3">Manual load</span><span class="mu" data-i18n="sim.m3u">h / week</span><span class="md" id="md3" data-i18n="sim.base">baseline</span></div>
+      </div>
+      
+      <div class="sim-chart">
+        <div class="chart-title" data-i18n="sim.chartTitle">Same demand, different outcome — a week by day</div>
+        <div class="chart" id="chart"></div>
+      </div>
+      <p class="sim-note" data-i18n="sim.note">Illustrative model for a private preview. Not a price list, an offer, or a commitment — exact numbers come from your operation.</p>
+    </div>
+  </div>
+</section>
+
+<section id="kapacita" class="sec">
+  <div class="wrap acc-grid">
+    <div class="rv">
+      <span class="eyebrow gold" data-i18n="acc.eyebrow">04 / Limited capacity</span>
+      <h2 class="sec-title" data-i18n="acc.title">We select the projects where we deliver the greatest impact.</h2>
+      <p class="sec-lede" data-i18n="acc.lede">Capacity is deliberately limited so every deployment gets full attention. We are opening two slots for Q1 2027.</p>
+      <div class="slots">
+        <span class="slot-num">02</span>
+        <span class="slot-lbl" data-i18n="acc.slotsLabel">Opening 2 slots for new deployments in Q1 2027.</span>
+      </div>
+      <ul class="k-list">
+        <li class="k-item" data-i18n="acc.k1">Operations where every request carries real value.</li>
+        <li class="k-item" data-i18n="acc.k2">Readiness to deploy within 30 days of approval.</li>
+        <li class="k-item" data-i18n="acc.k3">A commitment to measuring impact — not just “having it”.</li>
+      </ul>
+      <div class="nda" data-i18n="acc.nda">NDA is standard. Your operational details never leave the closed circle.</div>
+    </div>
+    <div class="form-card rv" style="--d:.2s">
+      <h3 class="f-title" data-i18n="form.title">Request access</h3>
+      <form id="form" novalidate>
+        <div class="field" id="fldName">
+          <label for="fName" data-i18n="form.name">Name</label>
+          <input type="text" id="fName" required autocomplete="name" placeholder="John Smith" data-i18n-ph="form.phName">
+          <span class="err" data-i18n="form.errName">Please enter your name.</span>
+        </div>
+        <div class="field" id="fldEmail">
+          <label for="fEmail" data-i18n="form.email">E-mail</label>
+          <input type="email" id="fEmail" required autocomplete="email" placeholder="john@company.com" data-i18n-ph="form.phEmail">
+          <span class="err" data-i18n="form.errEmail">Please enter a valid e-mail.</span>
+        </div>
+        <div class="field" id="fldMsg">
+          <label for="fMsg" data-i18n="form.msg">What are you solving?</label>
+          <textarea id="fMsg" required rows="3" placeholder="E.g. we miss evening enquiries and lose context between shifts…" data-i18n-ph="form.phMsg"></textarea>
+          <span class="err" data-i18n="form.errMsg">Write a few sentences — at least 10 characters.</span>
+        </div>
+        <input type="text" id="fCompany" hidden> <!-- honeypot -->
+        <button type="submit" class="btn btn-gold f-submit" id="fSubmit">
+          <span class="spinner"></span>
+          <span id="submitLbl" data-i18n="form.submit">Request access</span>
+          <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <p style="margin-top:12px;font:500 11px/1.6 var(--f-m);color:var(--dim);" data-i18n="form.note">We reply within 48 hours. No newsletter, no spam.</p>
+      </form>
+      <div class="ok-panel" id="okPanel" hidden>
+        <div class="ok-icon">✓</div>
+        <h4 class="ok-title" id="okTitle" tabindex="-1" data-i18n="ok.title">Request received.</h4>
+        <p class="ok-body" data-i18n="ok.body">We’ll get back to you within 48 hours with the next step. (Demo submission — this preview stores nothing.)</p>
+        <button class="btn btn-ghost btn-sm ok-agian" id="okAgain" data-i18n="ok.again">Send another message</button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap foot-in">
+    <div class="foot-brand">
+      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="58" height="58" rx="15"/><path d="M22 15 V35 Q22 46 33 46 H38" stroke-linecap="round"/><circle cx="46" cy="20" r="5" fill="currentColor"/><path d="M46 32 V42" stroke-linecap="round"/></svg>
+      <span class="foot-txt" data-i18n="foot.tag">A proprietary voice and communication layer. We show the outcome, not the mechanism.</span>
+    </div>
+    <div class="foot-links">
+      <a href="#" data-i18n="foot.rights">© 2026 LiBot / Li · Prague</a>
+      <a href="#hero" data-i18n="foot.top">Back to top ↑</a>
+    </div>
+  </div>
+</footer>
+
+<!-- AUDIO PLAYER UI -->
+<div class="audio-player" id="audioPlayer">
+  <button class="ap-btn" id="apToggle" aria-label="Play/Pause Music">
+    <!-- Play Icon -->
+    <svg id="apIconPlay" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:block;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+    <!-- Pause Icon -->
+    <svg id="apIconPause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+  </button>
+  
+  <span class="ap-label">VOL</span>
+  <div class="ap-slider-container">
+    <input type="range" class="ap-volume" id="apVolume" min="0" max="100" value="50" aria-label="Volume">
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+const W=window,D=document,HTML=D.documentElement;
+const RMQ=W.matchMedia('(prefers-reduced-motion: reduce)');
+let reduced=RMQ.matches;
+const $=(s,c)=>(c||D).querySelector(s);
+const $$=(s,c)=>Array.from((c||D).querySelectorAll(s));
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const smooth=(e0,e1,x)=>{const t=clamp((x-e0)/(e1-e0),0,1);return t*t*(3-2*t);};
+const easeO=t=>1-Math.pow(1-t,3);
+const easeIO=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const store={get(k){try{return localStorage.getItem(k);}catch(e){return null;}},set(k,v){try{localStorage.setItem(k,v);}catch(e){}}};
+
+/* ================= I18N ================= */
+const I18N={
+cs:{
+"meta.title":"LiBot / Li — Každý hovor, který je už vyřešený.",
+"hero.h1a":"Každý hovor,","hero.h1b":"který je už","hero.h1c":"vyřešený.",
+"hero.sub":"Nečekáme na problém. Skládáme komunikaci do stavu, kdy problém nemá šanci vzniknout. Mechanismus zůstává uvnitř — vidíte jen výsledek.",
+"nav.paradigm":"Paradigma","nav.capabilities":"Schopnosti","nav.impact":"Dopad","nav.access":"Přístup",
+"nav.menuOpen":"Otevřít menu","nav.menuClose":"Zavřít menu",
+"sound.label":"Zvuk","sound.on":"Zapnuto","sound.off":"Vypnuto",
+"phase.live":"SINGULARITA — AKTIVNÍ","phase.resolving":"SKLÁDÁNÍ — PROBÍHÁ","phase.resolved":"VYŘEŠENO — ABSOLUTNÍ KLID","phase.paused":"POLE PAUZA",
+"console.label":"Řízení pole · živý náhled","console.int":"Intenzita","console.tempo":"Tempo","console.glow":"Záře","console.dens":"Hustota","console.grav":"Gravitace","console.depth":"Hloubka",
+"console.pause":"Pauza","console.play":"Přehrát","console.auto":"Auto-cyklus","console.lock":"Uzamknout pole","console.locking":"Skládám…","console.locked":"Uzamčeno ✓","console.reset":"Reset na defaulty",
+"log.label":"Lock log · ilustrativní","log.labelShort":"Log","log.ok":"UZAMČENO",
+"log.items":[{t:"09:41:07",l:"CZ",d:"0.112 s"},{t:"09:42:19",l:"EN",d:"0.098 s"},{t:"09:44:03",l:"DE",d:"0.104 s"},{t:"09:45:41",l:"PL",d:"0.089 s"},{t:"09:47:22",l:"SK",d:"0.117 s"},{t:"09:49:08",l:"CZ",d:"0.094 s"},{t:"09:51:36",l:"EN",d:"0.101 s"},{t:"09:52:54",l:"DE",d:"0.108 s"}],
+"par.eyebrow":"01 / Posun paradigmatu","par.title":"Pořádek, který dorazí dřív než problém.",
+"par.lede":"Starý svět čeká, až se komunikace rozpadne — pak ji slepuje zpět. Nový standard ji složí do vyřešeného stavu dřív, než stačí být problémem.",
+"par.quote":"„nevysvětlujeme jak. ukazujeme že.“","par.cta":"Podívejte se na dopad v číslech",
+"par.oldBadge":"Starý svět","par.newBadge":"Standard LiBot / Li",
+"p.r1.old":"Zmeškané požadavky","p.r1.oldD":"Nikdo nezvedl v špičce. Zákazník zkouší konkurenci.","p.r1.new":"Zachycený požadavek","p.r1.newD":"Každý signál je přijat, potvrzen a doveden k řešení.",
+"p.r2.old":"Ztracený kontext","p.r2.oldD":"Informace žijí v hlavách, mailech a lepících poznámkách.","p.r2.new":"Přenášený kontext","p.r2.newD":"Historie a záměr cestují s požadavkem až k člověku.",
+"p.r3.old":"Jazykové bariéry","p.r3.oldD":"Zákazník píše německy, tým odpovídá česky — pozdě.","p.r3.new":"Jazyky bez tření","p.r3.newD":"CS, EN, DE, PL, SK. Žádné přepínání, žádná ztráta nuancí.",
+"p.r4.old":"Nástroje vyžadující ruční péči","p.r4.oldD":"Tabulky, připomínky, půlnoční kontroly fronty.","p.r4.new":"Vrstva na pozadí","p.r4.newD":"Bezešvě běží pod operacemi. Ven jde jen výsledek.",
+"cap2.eyebrow":"02 / Schopnosti","pil.title":"Pět pilířů. Jedna nehmotná vrstva.","pil.lede":"Architektura, kterou nemusíte chápat, abyste jí věřili. Vidíte výsledek; mechanismus zůstává uvnitř.",
+"c.a.tag":"Přirozený hlas","c.a.title":"Hlasové jádro","c.a.desc":"Mluví jako člověk s časem: klidně, věcně, tempem zákazníka. Rozumí přerušení, tichu i tomu, co je řečeno mezi řádky.","c.a.cap":"Stojaté vlnění — živý náhled",
+"c.b.tag":"Živý kontext","c.b.title":"Kontextová vrstva","c.b.desc":"Každý požadavek si nese historii. Nic se neptá dvakrát, nic se neztratí při předání.","c.b.cap":"Kontextová nit — náhled",
+"c.c.tag":"CS · EN · DE · PL · SK","c.c.title":"Vícejazyčná vrstva","c.c.desc":"Jedna konverzace, pět jazyků. Zákazník mluví svým — výsledek je stejný.","c.c.cap":"Jedna konverzace, pět jazyků",
+"c.d.tag":"Předání člověku","c.d.title":"Lidská kontinuita","c.d.desc":"Když vstupuje člověk, vstupuje se vším: kontext, záměr, doporučený další krok. Nula vysvětlování od začátku.","c.d.cap":"Bezztrátové předání — náhled",
+"c.e.tag":"Proprietární","c.e.title":"Uzavřený ekosystém","c.e.desc":"Co je uvnitř, zůstane uvnitř. Žádné disclose mechanismu, žádné závislosti navíc. Klíč k výsledku.","c.e.cap":"Utěsněná hranice — náhled",
+"sim.eyebrow":"03 / Simulátor dopadu","sim.title":"Před a po. Měřitelný rozdíl.","sim.lede":"Stejná operace, stejná poptávka — jiný výsledek. Přepněte scénář a sledujte, co se změní.",
+"sim.badge":"Soukromý náhled","sim.before":"Před","sim.after":"Po nasazení · LiBot / Li",
+"sim.statusB":"Fronta roste. Kontext se tříští. Tipy hasí požáry.","sim.statusA":"Fronta je prázdná. Kontext drží. Týpy tvoří.",
+"sim.m1":"Nevyřešené požadavky","sim.m1u":"/ týden","sim.m2":"Čas do první reakce","sim.m3":"Ruční zátěž","sim.m3u":"h / týden",
+"sim.base":"baseline","sim.delta1":"−100%","sim.delta2":"−99.9%","sim.delta3":"−81%",
+"sim.chartTitle":"Stejná poptávka, jiný výsledek — týden po dnech","sim.legRes":"Vyřešeno","sim.legCap":"Zachyceno","sim.legMiss":"Nevyřešeno",
+"sim.d1":"Po","sim.d2":"Út","sim.d3":"St","sim.d4":"Čt","sim.d5":"Pá","sim.d6":"So","sim.d7":"Ne",
+"sim.note":"Ilustrativní model pro soukromý náhled. Ne ceník, nabídka ani závazek — přesná čísla pocházejí z vaší operace.",
+"acc.eyebrow":"04 / Omezená kapacita","acc.title":"Vybíráme projekty, kde dodáme největší dopad.",
+"acc.lede":"Kapacita je záměrně limitovaná, aby každé nasazení dostalo plnou pozornost. Otevíráme dva sloty pro Q1 2027.",
+"acc.slots":"volných slotů","acc.slotsLabel":"Otevíráme 2 sloty pro nová nasazení v Q1 2027.",
+"acc.k1":"Operace, kde každý požadavek má reálnou hodnotu.","acc.k2":"Připravenost nasadit do 30 dní od schválení.","acc.k3":"Závazek měřit dopad — nejen „mět to“.",
+"acc.nda":"NDA je standard. Vaše provozní detaily nikdy neopustí uzavřený kruh.",
+"form.title":"Vyžádat přístup","form.name":"Jméno","form.email":"E-mail","form.msg":"Co řešíte?",
+"form.phName":"Jan Novák","form.phEmail":"jan@firma.cz","form.phMsg":"Např. večerní dotazy nám unikají a ztrácíme kontext mezi směnami…",
+"form.submit":"Vyžádat přístup","form.sending":"Odesílám…","form.note":"Odpovíme do 48 hodin. Žádný newsletter, žádný spam.",
+"form.errName":"Zadejte prosím jméno.","form.errEmail":"Zadejte platný e-mail.","form.errMsg":"Napište pár vět — alespoň 10 znaků.",
+"ok.badge":"Vyřešeno ✓","ok.title":"Požadavek přijat.","ok.body":"Ozveme se vám do 48 hodin s dalším krokem. (Demo odeslání — tento náhled nic neukládá.)","ok.again":"Poslat další zprávu",
+"foot.tag":"Proprietární hlasová a komunikační vrstva. Ukazujeme výsledek, ne mechanismus.","foot.rights":"© 2026 LiBot / Li · Praha","foot.note":"Know-how chráněno. Výsledky na klíč.","foot.top":"Zpět nahoru ↑"
+},
+en:{
+"meta.title":"LiBot / Li — Every call resolved standing by.",
+"hero.h1a":"Every call","hero.h1b":"already","hero.h1c":"resolved.",
+"hero.sub":"We don't wait for problems. We fold communication into a state where problems cannot arise. The mechanism stays inside — you only see the result.",
+"nav.paradigm":"Paradigm","nav.capabilities":"Capabilities","nav.impact":"Impact","nav.access":"Access",
+"nav.menuOpen":"Open menu","nav.menuClose":"Close menu",
+"sound.label":"Sound","sound.on":"On","sound.off":"Off",
+"phase.live":"SINGULARITY — ACTIVE","phase.resolving":"FOLDING — IN PROGRESS","phase.resolved":"RESOLVED — ABSOLUTE STILLNESS","phase.paused":"FIELD PAUSED",
+"console.label":"Field direction · live preview","console.int":"Intensity","console.tempo":"Tempo","console.glow":"Glow","console.dens":"Density","console.grav":"Gravity","console.depth":"Depth",
+"console.pause":"Pause","console.play":"Play","console.auto":"Auto-cycle","console.lock":"Lock the field","console.locking":"Folding…","console.locked":"Locked ✓","console.reset":"Reset to defaults",
+"log.label":"Lock log · illustrative","log.labelShort":"Log","log.ok":"LOCKED",
+"log.items":[{t:"09:41:07",l:"CZ",d:"0.112 s"},{t:"09:42:19",l:"EN",d:"0.098 s"},{t:"09:44:03",l:"DE",d:"0.104 s"},{t:"09:45:41",l:"PL",d:"0.089 s"},{t:"09:47:22",l:"SK",d:"0.117 s"},{t:"09:49:08",l:"CZ",d:"0.094 s"},{t:"09:51:36",l:"EN",d:"0.101 s"},{t:"09:52:54",l:"DE",d:"0.108 s"}],
+"par.eyebrow":"01 / Paradigm shift","par.title":"Order that arrives before the problem.",
+"par.lede":"The old world waits for communication to shatter — then glues it back. The new standard folds it into a resolved state before it can become a problem.",
+"par.quote":"“We don’t explain how. We show that.”","par.cta":"See the impact in numbers",
+"par.oldBadge":"The old world","par.newBadge":"The LiBot / Li standard",
+"p.r1.old":"Missed requests","p.r1.oldD":"Nobody picked up at peak time. The customer tries a competitor.","p.r1.new":"Captured request","p.r1.newD":"Every signal is received, confirmed and driven to resolution.",
+"p.r2.old":"Lost context","p.r2.oldD":"Information lives in heads, e-mails and sticky notes.","p.r2.new":"Carried context","p.r2.newD":"History and intent travel with the request all the way to a human.",
+"p.r3.old":"Language barriers","p.r3.oldD":"The customer writes in German, the team replies in Czech — late.","p.r3.new":"Languages without friction","p.r3.newD":"CS, EN, DE, PL, SK. No switching, no lost nuance.",
+"p.r4.old":"Tools needing manual care","p.r4.oldD":"Spreadsheets, reminders, midnight queue checks.","p.r4.new":"A layer in the background","p.r4.newD":"Runs quietly beneath operations. Only the outcome surfaces.",
+"cap2.eyebrow":"02 / Capabilities","pil.title":"Five pillars. One immaterial layer.","pil.lede":"An architecture you don’t need to understand in order to trust it. You see the outcome; the mechanism stays inside.",
+"c.a.tag":"Natural voice","c.a.title":"Voice core","c.a.desc":"Speaks like a person with time: calm, factual, at the customer’s pace. Understands interruptions, silence and what is said between the lines.","c.a.cap":"Standing wave — live preview",
+"c.b.tag":"Living context","c.b.title":"Context layer","c.b.desc":"Every request carries its history. Nothing is asked twice, nothing is lost between handoffs.","c.b.cap":"Context thread — preview",
+"c.c.tag":"CS · EN · DE · PL · SK","c.c.title":"Multilingual layer","c.c.desc":"One conversation, five languages. The customer speaks their own — the outcome is the same.","c.c.cap":"One conversation, five languages",
+"c.d.tag":"Human handoff","c.d.title":"Human continuity","c.d.desc":"When a human steps in, they step in with everything: context, intent, recommended next step. Zero explaining from scratch.","c.d.cap":"Lossless handoff — preview",
+"c.e.tag":"Proprietary","c.e.title":"Closed ecosystem","c.e.desc":"What is inside stays inside. No mechanism disclosure, no extra dependencies. Turnkey outcomes.","c.e.cap":"Sealed boundary — preview",
+"sim.eyebrow":"03 / Impact simulator","sim.title":"Before and after. A measurable difference.","sim.lede":"Same operation, same demand — a different outcome. Switch the scenario and watch what changes.",
+"sim.badge":"Private preview","sim.before":"Before","sim.after":"After deployment · LiBot / Li",
+"sim.statusB":"The queue grows. Context fragments. Teams firefight.","sim.statusA":"The queue is empty. Context holds. Teams create.",
+"sim.m1":"Unresolved requests","sim.m1u":"/ week","sim.m2":"Time to first response","sim.m3":"Manual load","sim.m3u":"h / week",
+"sim.base":"baseline","sim.delta1":"−100%","sim.delta2":"−99.9%","sim.delta3":"−81%",
+"sim.chartTitle":"Same demand, different outcome — a week by day","sim.legRes":"Resolved","sim.legCap":"Captured","sim.legMiss":"Unresolved",
+"sim.d1":"Mon","sim.d2":"Tue","sim.d3":"Wed","sim.d4":"Thu","sim.d5":"Fri","sim.d6":"Sat","sim.d7":"Sun",
+"sim.note":"Illustrative model for a private preview. Not a price list, an offer, or a commitment — exact numbers come from your operation.",
+"acc.eyebrow":"04 / Limited capacity","acc.title":"We select the projects where we deliver the greatest impact.",
+"acc.lede":"Capacity is deliberately limited so every deployment gets full attention. We are opening two slots for Q1 2027.",
+"acc.slots":"open slots","acc.slotsLabel":"Opening 2 slots for new deployments in Q1 2027.",
+"acc.k1":"Operations where every request carries real value.","acc.k2":"Readiness to deploy within 30 days of approval.","acc.k3":"A commitment to measuring impact — not just “having it”.",
+"acc.nda":"NDA is standard. Your operational details never leave the closed circle.",
+"form.title":"Request access","form.name":"Name","form.email":"E-mail","form.msg":"What are you solving?",
+"form.phName":"John Smith","form.phEmail":"john@company.com","form.phMsg":"E.g. we miss evening enquiries and lose context between shifts…",
+"form.submit":"Request access","form.sending":"Sending…","form.note":"We reply within 48 hours. No newsletter, no spam.",
+"form.errName":"Please enter your name.","form.errEmail":"Please enter a valid e-mail.","form.errMsg":"Write a few sentences — at least 10 characters.",
+"ok.badge":"Resolved ✓","ok.title":"Request received.","ok.body":"We’ll get back to you within 48 hours with the next step. (Demo submission — this preview stores nothing.)","ok.again":"Send another message",
+"foot.tag":"A proprietary voice and communication layer. We show the outcome, not the mechanism.","foot.rights":"© 2026 LiBot / Li · Prague","foot.note":"Know-how protected. Turnkey outcomes.","foot.top":"Back to top ↑"
+}};
+let lang=store.get('libot-lang')||'cs'; if(!I18N[lang])lang='cs';
+const T=k=>{const v=I18N[lang][k];return v!==undefined?v:k;};
+const nf=()=>{try{return new Intl.NumberFormat(lang==='cs'?'cs-CZ':'en-US');}catch(e){return {format:n=>String(n)};}};
+function fmtDur(s){s=Math.round(s);if(s>=3600){let h=Math.floor(s/3600),m=Math.round((s%3600)/60);if(m===60){h++;m=0;}return lang==='cs'?(h+' h '+m+' m'):(h+'h '+m+'m');}return lang==='cs'?(s+' s'):(s+'s');}
+
+/* ================= AUDIO ENGINE (NEW) ================= */
+const AudioEngine = (function() {
+  let audioCtx = null;
+  let sourceNode = null;
+  let gainNode = null;
+  let isPlaying = false;
+  let volume = 0.5; // Default 50%
+  let bufferLoaded = false;
+  
+  // Placeholder URL - Replace this with your actual MP3/WAV file path
+  // For demo purposes, if fetch fails, we generate a simple tone
+  const AUDIO_SRC = "https://cdn.pixabay.com/download/audio/2022/03/15/audio_1a1b1c1d.mp3?filename=ambient-piano-and-strings-warm-up-12214.mp3"; 
+
+  function initContext() {
+    if (!audioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return false;
+      audioCtx = new AC();
+      gainNode = audioCtx.createGain();
+      gainNode.connect(audioCtx.destination);
